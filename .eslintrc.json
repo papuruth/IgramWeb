@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "prettier", "prettier/react","plugin:react-hooks/recommended"],
+  "env": {
+    "browser": true
+  },
+  "plugins": ["react", "jsx-a11y", "import", "react-hooks"],
+  "rules": {
+    "camelcase": 0,
+    "global-require": "off",
+    "implicit-arrow-linebreak": "off",
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off",
+    "react/jsx-props-no-spreading": "off",
+    "no-restricted-globals": "off",
+    "no-console": "off",
+    "jsx-a11y/control-has-associated-label": 0,
+    "no-use-before-define": 0,
+    "jsx-a11y/media-has-caption": 0,
+    "no-shadow": "off",
+    "react/prop-types": "off",
+    "no-nested-ternary": "off",
+    "max-len": [
+      "error",
+      { "code": 300, "ignorePattern": "^import|const\\s.+=\\s*require\\(" }
+    ],
+    "import/no-cycle": "off",
+    "single-quote": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@", "./src"]]
+      }
+    }
+  }
+}

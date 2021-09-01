@@ -1,0 +1,24 @@
+.react-multiple-carousel__arrow, .react-multiple-carousel__arrow:hover {
+  background: #fff;
+  min-width: 30px;
+  min-height: 30px;
+}
+
+.react-multiple-carousel__arrow::before {
+  color: #000;
+}
+
+.T4LL3 {
+  -webkit-transform: rotateY(-90deg) translateX(-50%) rotateY(-90deg)
+    translateX(50%) rotateY(90deg);
+  transform: rotateY(-90deg) translateX(-50%) rotateY(-90deg) translateX(50%)
+    rotateY(90deg);
+  -webkit-transition: -webkit-transform 350ms ease-in-out;
+  transition: transform 350ms ease-in-out;
+  transition: transform 350ms ease-in-out, -webkit-transform 350ms ease-in-out;
+  z-index: 1;
+}
+
+.react-multi-carousel-list {
+  margin-left: 10px;
+}

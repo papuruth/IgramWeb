@@ -1,0 +1,13 @@
+.MuiDialog-paperWidthSm {
+  width: 400px !important;
+}
+@media (max-width: 767px) {
+  .MuiDialog-paperWidthSm {
+    width: 286px !important;
+  }
+}
+
+.css-1ujetdd {
+  top: 40% !important;
+  left: 46% !important;
+}

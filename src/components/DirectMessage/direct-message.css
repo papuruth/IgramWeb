@@ -1,0 +1,23 @@
+.pending-request-wrapper {
+  display: flex!important;
+  justify-content: space-between;
+  padding: 10px 10px 0px;
+  width: 100%;
+}
+
+.chatlist-title {
+  font-weight: 700;
+}
+
+.pending-request-content {
+  color: #0095f6;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.pending-request-content:active {
+  color: #9ccef0;
+  cursor: pointer;
+  transform: translateY(1px);
+  font-weight: 600;
+}
