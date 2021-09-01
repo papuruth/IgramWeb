@@ -1,11 +1,4 @@
 /* eslint-disable react/prop-types */
-import { loaderStartAction } from '@/redux/Loader/loaderAction';
-import {
-  fullUserInfoAction,
-  searchExactUserAction,
-  userFeedAction,
-} from '@/redux/user/userAction';
-import Toast from '@/utils/toast';
 import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,6 +7,13 @@ import Tabs from '@material-ui/core/Tabs';
 import { BookmarkBorderOutlined, GridOn, LiveTv } from '@material-ui/icons';
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Toast from '@/utils/toast';
+import {
+  fullUserInfoAction,
+  searchExactUserAction,
+  userFeedAction,
+} from '@/redux/user/userAction';
+import { loaderStartAction } from '@/redux/Loader/loaderAction';
 import { RenderPrivateAccount } from './renderPrivateAccount';
 import { RenderProfileHeader } from './renderProfileHeader';
 import RenderUserFeeds from './renderUserFeeds';
@@ -61,7 +61,7 @@ class Profile extends React.Component {
     };
     const { dispatch, user, userFeeds, location } = props;
     const { pk, is_private, username } = location?.state || user;
-    console.log(is_private, location)
+    console.log(is_private, location);
     if (is_private && location.state) {
       dispatch(loaderStartAction());
       dispatch(fullUserInfoAction(pk, user.pk, username));
@@ -181,9 +181,10 @@ class Profile extends React.Component {
       <StyledContainer>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>{`${full_name} ${
-            full_name ? '(@${username})' : username
-          } • Instagram photos and videos`}</title>
+          <title>
+            {full_name}
+            {`${full_name ? ' @' : ''}${username} • Instagram photos and videos`}
+          </title>
         </Helmet>
         <MainContainer>
           <MainContainerWrapper>

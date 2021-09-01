@@ -1,9 +1,9 @@
 {
-  "root": true,
   "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier", "prettier/react","plugin:react-hooks/recommended"],
+  "extends": ["airbnb", "prettier", "plugin:jsx-a11y/recommended"],
   "env": {
-    "browser": true
+    "browser": true,
+    "jest": true
   },
   "plugins": ["react", "jsx-a11y", "import", "react-hooks"],
   "rules": {
