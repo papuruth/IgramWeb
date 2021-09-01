@@ -3,18 +3,6 @@
 import { ReactComponent as Comment } from '@/assets/images/comment.svg';
 import { ReactComponent as Like } from '@/assets/images/Like.svg';
 import { ReactComponent as SharePost } from '@/assets/images/SharePost.svg';
-import { ReactComponent as Unlike } from '@/assets/images/Unlike.svg';
-import RenderStories from '@/containers/RenderStories';
-import {
-  fetchUserReelAction,
-  likeMediaAction,
-  mediaCommentAction,
-  timelineAction,
-  unlikeMediaAction,
-} from '@/redux/timeline/timelineAction';
-import { changeGreetingFlagAction } from '@/redux/user/userAction';
-import { WORKER_URL } from '@/utils/constants';
-import Toast from '@/utils/toast';
 import { jsx } from '@emotion/core';
 import { ButtonBase, Divider, InputBase, Tooltip } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
@@ -40,6 +28,18 @@ import { Player } from 'video-react';
 import BigPlayButton from 'video-react/lib/components/BigPlayButton';
 import ControlBar from 'video-react/lib/components/control-bar/ControlBar';
 import Shortcut from 'video-react/lib/components/Shortcut';
+import Toast from '@/utils/toast';
+import { ReactComponent as Unlike } from '@/assets/images/Unlike.svg';
+import { WORKER_URL } from '@/utils/constants';
+import { changeGreetingFlagAction } from '@/redux/user/userAction';
+import {
+  fetchUserReelAction,
+  likeMediaAction,
+  mediaCommentAction,
+  timelineAction,
+  unlikeMediaAction,
+} from '@/redux/timeline/timelineAction';
+import RenderStories from '@/containers/RenderStories';
 import {
   IGDMFooterCopyright,
   IGDMFooterWrapper,
@@ -314,7 +314,8 @@ class Timeline extends React.Component {
             ref={(player) => {
               this.player = player;
             }}
-            key={id.split('_')[0]}>
+            key={id.split('_')[0]}
+          >
             <source src={videoUrl} />
             <Shortcut dblclickable={false} shortcuts={this.newShortcuts} />
             <ControlBar disableCompletely className="my-class" />
@@ -524,7 +525,8 @@ class Timeline extends React.Component {
                   containerClass="carousel-container"
                   removeArrowOnDeviceType={['tablet', 'mobile']}
                   dotListClass="custom-dot-list-style"
-                  itemClass="carousel-item-padding-40-px">
+                  itemClass="carousel-item-padding-40-px"
+                >
                   {userReels
                     // .slice(2)
                     .map(({ id, user, seen, ranked_position, items }) => {
@@ -543,8 +545,8 @@ class Timeline extends React.Component {
                                 user.pk,
                                 ranked_position,
                                 storyIndex,
-                              )
-                            }>
+                              )}
+                          >
                             <StoriesReelCarouselItemContentDiv>
                               <StoriesReelCarouselItemCanvas
                                 borderColor={
@@ -554,7 +556,8 @@ class Timeline extends React.Component {
                               <StoriesReelCarouselItemImageWrapperSpan
                                 aria-label="Open Stories"
                                 role="button"
-                                tabIndex="0">
+                                tabIndex="0"
+                              >
                                 <StoriesReelCarouselItemImg
                                   src={`${WORKER_URL}${profile_pic_url}`}
                                   alt="cover media"
@@ -563,7 +566,8 @@ class Timeline extends React.Component {
                             </StoriesReelCarouselItemContentDiv>
                             <StoriesReelCarouselItemCaptionDiv
                               role="menuitem"
-                              tabIndex="0">
+                              tabIndex="0"
+                            >
                               {username}
                             </StoriesReelCarouselItemCaptionDiv>
                           </StoriesReelCarouselButton>
@@ -578,17 +582,20 @@ class Timeline extends React.Component {
                   containerClass="carousel-container"
                   removeArrowOnDeviceType={['tablet', 'mobile']}
                   dotListClass="custom-dot-list-style"
-                  itemClass="carousel-item-padding-40-px">
+                  itemClass="carousel-item-padding-40-px"
+                >
                   {storiesArray.map((num, index) => {
                     return (
                       <StoriesReelCarouselItemWrapperDiv
-                        key={'SkeletonList'.concat(index)}>
+                        key={'SkeletonList'.concat(index)}
+                      >
                         <StoriesReelCarouselButton role="menuitem" tabIndex="0">
                           <StoriesReelCarouselItemContentDiv>
                             <StoriesReelCarouselItemImageWrapperSpan
                               aria-label="Open Stories"
                               role="button"
-                              tabIndex="0">
+                              tabIndex="0"
+                            >
                               <Skeleton
                                 animation="wave"
                                 variant="circle"
@@ -611,7 +618,8 @@ class Timeline extends React.Component {
             loadMore={this.fetchMoreData}
             hasMore={hasMore || false}
             loader=""
-            threshold={2000}>
+            threshold={2000}
+          >
             {filteredTImeline.length > 0 ? (
               filteredTImeline.map(({ media_or_ad }) => {
                 const item = media_or_ad;
@@ -650,19 +658,19 @@ class Timeline extends React.Component {
                     !isAd && (
                       <Card className={classes.root} key={item.pk}>
                         <CardHeader
-                          avatar={
+                          avatar={(
                             <Avatar
                               aria-label="user_image"
                               alt={username}
                               className={classes.avatar}
                               src={`${WORKER_URL}${profile_pic_url}` || <AccountCircle />}
                             />
-                          }
-                          action={
+                          )}
+                          action={(
                             <IconButton aria-label="settings">
                               <MoreHoriz />
                             </IconButton>
-                          }
+                          )}
                           title={username}
                           subheader={location}
                         />
@@ -673,7 +681,8 @@ class Timeline extends React.Component {
                                 ref={(player) => {
                                   this.player = player;
                                 }}
-                                playsInline>
+                                playsInline
+                              >
                                 <source src={videoUrl} />
                                 <Shortcut
                                   dblclickable={false}
@@ -703,7 +712,8 @@ class Timeline extends React.Component {
                                 containerClass="carousel-container"
                                 removeArrowOnDeviceType={['tablet', 'mobile']}
                                 dotListClass="custom-dot-list-style"
-                                itemClass="carousel-item-padding-40-px">
+                                itemClass="carousel-item-padding-40-px"
+                              >
                                 {this.renderCarousel(item.carousel_media)}
                               </Carousel>
                             </div>
@@ -713,18 +723,20 @@ class Timeline extends React.Component {
                           <IconButton
                             aria-label={has_liked ? 'Unlike' : 'Like'}
                             onClick={() =>
-                              this.likeUnlikePost(item.id, has_liked)
-                            }>
+                              this.likeUnlikePost(item.id, has_liked)}
+                          >
                             {has_liked ? <Unlike /> : <Like />}
                           </IconButton>
                           <IconButton
                             aria-label="comment"
-                            onClick={() => this.openComment(item.id)}>
+                            onClick={() => this.openComment(item.id)}
+                          >
                             <Comment />
                           </IconButton>
                           <IconButton
                             aria-label="share"
-                            onClick={() => this.sharePost(item.id)}>
+                            onClick={() => this.sharePost(item.id)}
+                          >
                             <SharePost />
                           </IconButton>
                           <IconButton
@@ -733,7 +745,8 @@ class Timeline extends React.Component {
                               [classes.expandOpen]: expanded,
                             })}
                             aria-expanded={expanded}
-                            aria-label="show more">
+                            aria-label="show more"
+                          >
                             <BookmarkBorder />
                           </IconButton>
                         </CardActions>
@@ -743,7 +756,8 @@ class Timeline extends React.Component {
                             <Typography
                               variant="body2"
                               color="textSecondary"
-                              component="div">
+                              component="div"
+                            >
                               <span>
                                 <Avatar
                                   className={classes.likeAvatar}
@@ -759,9 +773,11 @@ class Timeline extends React.Component {
                                     marginLeft: '.25em',
                                     color: '#000',
                                     fontWeight: '500',
-                                  }}>
+                                  }}
+                                >
                                   {liker.username}
-                                </Link>{' '}
+                                </Link>
+                                {' '}
                                 and
                                 <a
                                   href={`https://instagram.com/p/${code}`}
@@ -771,8 +787,11 @@ class Timeline extends React.Component {
                                     marginLeft: '.25em',
                                     color: '#000',
                                     fontWeight: '500',
-                                  }}>
-                                  {like_count} others.
+                                  }}
+                                >
+                                  {like_count}
+                                  {' '}
+                                  others.
                                 </a>
                               </span>
                             </Typography>
@@ -781,13 +800,17 @@ class Timeline extends React.Component {
                             <Typography
                               variant="body2"
                               color="textSecondary"
-                              component="div">
+                              component="div"
+                            >
                               <LikeTooltip
                                 title={`${like_count} likes`}
                                 arrow
-                                placement="top-start">
+                                placement="top-start"
+                              >
                                 <span className={classes.video_views}>
-                                  {view_count} views
+                                  {view_count}
+                                  {' '}
+                                  views
                                 </span>
                               </LikeTooltip>
                             </Typography>
@@ -796,19 +819,22 @@ class Timeline extends React.Component {
                             <Typography
                               variant="body2"
                               color="textSecondary"
-                              component="p">
+                              component="p"
+                            >
                               <span>
                                 <a
                                   style={{ color: '#000', fontWeight: '500' }}
                                   href={`https://instagram.com/${username}`}
                                   target="_blank"
-                                  rel="noopener noreferrer">
+                                  rel="noopener noreferrer"
+                                >
                                   {username}
                                 </a>
                               </span>
                               {(captionLess || captionLessId !== item.pk) && (
                                 <span
-                                  className={`${classes.spanRight} ${classes.caption_text_less}`}>
+                                  className={`${classes.spanRight} ${classes.caption_text_less}`}
+                                >
                                   {item?.caption?.text?.substring(0, 50)}
                                 </span>
                               )}
@@ -816,7 +842,8 @@ class Timeline extends React.Component {
                                 <Typography
                                   variant="body1"
                                   component="span"
-                                  className={`${classes.spanRight} ${classes.caption_text_full}`}>
+                                  className={`${classes.spanRight} ${classes.caption_text_full}`}
+                                >
                                   {this.parseString(item.caption.text).map(
                                     (ele, i) => (
                                       <React.Fragment key={'caption'.concat(i)}>
@@ -832,8 +859,8 @@ class Timeline extends React.Component {
                                   className={classes.readMore}
                                   type="button"
                                   onClick={(e) =>
-                                    this.showFullCaption(e, item.pk)
-                                  }>
+                                    this.showFullCaption(e, item.pk)}
+                                >
                                   ...&nbsp;more
                                 </button>
                               )}
@@ -845,8 +872,15 @@ class Timeline extends React.Component {
                               component="div"
                               color="textSecondary"
                               className={classes.comment}
-                              onClick={() => this.openComment(item.id)}>
-                              <span>View all {comment_count} comments</span>
+                              onClick={() => this.openComment(item.id)}
+                            >
+                              <span>
+                                View all
+                                {' '}
+                                {comment_count}
+                                {' '}
+                                comments
+                              </span>
                             </Typography>
                           )}
                           {preview_comments &&
@@ -863,14 +897,16 @@ class Timeline extends React.Component {
                                   key={pk}
                                   variant="body2"
                                   color="textSecondary"
-                                  component="p">
+                                  component="p"
+                                >
                                   <span>
                                     <Link
                                       style={{
                                         color: '#000',
                                         fontWeight: '500',
                                       }}
-                                      to={`/${user.username}`}>
+                                      to={`/${user.username}`}
+                                    >
                                       {user.username}
                                     </Link>
                                   </span>
@@ -878,10 +914,12 @@ class Timeline extends React.Component {
                                     {mentionUsername.map((mention) => (
                                       <Link
                                         to={`/${mention.slice(1)}`}
-                                        key={mention}>
+                                        key={mention}
+                                      >
                                         {mention}
                                       </Link>
-                                    ))}{' '}
+                                    ))}
+                                    {' '}
                                     {extraText}
                                   </span>
                                 </Typography>
@@ -889,13 +927,15 @@ class Timeline extends React.Component {
                             })}
                           <Typography
                             variant="body1"
-                            className={classes.dateTime}>
+                            className={classes.dateTime}
+                          >
                             <Link to={`/post/${code}`}>
                               <time
                                 dateTime={moment.unix(taken_at).format()}
                                 title={moment
                                   .unix(taken_at)
-                                  .format('MMM DD, YYYY')}>
+                                  .format('MMM DD, YYYY')}
+                              >
                                 {moment.unix(taken_at).fromNow().toUpperCase()}
                               </time>
                             </Link>
@@ -903,18 +943,20 @@ class Timeline extends React.Component {
                           <Typography
                             variant="body1"
                             component="div"
-                            className={classes.commentBox}>
+                            className={classes.commentBox}
+                          >
                             <Divider />
                             <div className={classes.commentInputWrapper}>
                               <form
                                 onSubmit={(event) =>
-                                  this.postComment(event, item.id)
-                                }
-                                method="POST">
+                                  this.postComment(event, item.id)}
+                                method="POST"
+                              >
                                 <ButtonBase
                                   className={classes.commentButton}
                                   type="submit"
-                                  disabled={!commentText}>
+                                  disabled={!commentText}
+                                >
                                   Post
                                 </ButtonBase>
                                 <InputBase
@@ -926,8 +968,7 @@ class Timeline extends React.Component {
                                   placeholder="Add a comment..."
                                   onChange={this.handleUserInput}
                                   onKeyDown={(event) =>
-                                    this.handleSubmit(event, item.id)
-                                  }
+                                    this.handleSubmit(event, item.id)}
                                   multiline
                                 />
                               </form>
@@ -971,7 +1012,8 @@ class Timeline extends React.Component {
               left: `${
                 winWidth > 1400 ? (winWidth * 61) / 100 : (winWidth * 68) / 100
               }px`,
-            }}>
+            }}
+          >
             <UserSuggestionProfileWrapper>
               <UserSuggestionProfileContent>
                 <UserSuggestionProfileImage role="button" tabIndex="0">
@@ -995,8 +1037,7 @@ class Timeline extends React.Component {
                               userLoggedInStory.ranked_position,
                               storyIndex,
                             )
-                          : history.push(`/${user.username}`)
-                      }
+                          : history.push(`/${user.username}`)}
                     />
                   </UserSuggestionProfileImageSpan>
                 </UserSuggestionProfileImage>
@@ -1042,18 +1083,21 @@ class Timeline extends React.Component {
                                 social_context,
                               }) => (
                                 <UserSuggestionSuggestedUserMainDIV
-                                  key={user.pk}>
+                                  key={user.pk}
+                                >
                                   <UserSuggestionSuggestedUserMainDIV1>
                                     <UserSuggestionSuggestedUserMainDIV1Content
                                       role="button"
-                                      tabIndex="0">
+                                      tabIndex="0"
+                                    >
                                       <UserSuggestionSuggestedUserMainDIV1Canvas />
                                       <Link
                                         css={userSuggestedLink}
                                         to={{
                                           pathname: `/${user.username}`,
                                           state: user,
-                                        }}>
+                                        }}
+                                      >
                                         <UserSuggestionSuggestedUserMainDIV1IMG
                                           alt={`${user.username} profile pic`}
                                           src={`${WORKER_URL}${user?.profile_pic_url}`}
@@ -1068,11 +1112,13 @@ class Timeline extends React.Component {
                                           to={{
                                             pathname: `/${user.username}`,
                                             state: user,
-                                          }}>
+                                          }}
+                                        >
                                           <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV1>
                                             <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV2>
                                               <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV3
-                                                title={user.username}>
+                                                title={user.username}
+                                              >
                                                 {user.username}
                                                 {user.is_verified && (
                                                   <UserSuggestionSuggestedUserMainDIV2Verified>
@@ -1108,59 +1154,61 @@ class Timeline extends React.Component {
                               ),
                             )
                         : suggestedUserArray.map((num, index) => (
-                            <UserSuggestionSuggestedUserMainDIV
-                              key={'SuggestedUserSkeleton'.concat(index)}>
-                              <UserSuggestionSuggestedUserMainDIV1>
-                                <UserSuggestionSuggestedUserMainDIV1Content
-                                  role="button"
-                                  tabIndex="0">
-                                  <UserSuggestionSuggestedUserMainDIV1Canvas />
-                                  <UserSuggestionSuggestedUserMainDIV1Anchor href="/">
-                                    <Skeleton
-                                      animation="wave"
-                                      variant="circle"
-                                      width="100%"
-                                      height="100%"
-                                    />
-                                  </UserSuggestionSuggestedUserMainDIV1Anchor>
-                                </UserSuggestionSuggestedUserMainDIV1Content>
-                              </UserSuggestionSuggestedUserMainDIV1>
-                              <UserSuggestionSuggestedUserMainDIV2>
-                                <UserSuggestionSuggestedUserMainDIV2UnameWrapper>
-                                  <UserSuggestionSuggestedUserMainDIV2UnameContent>
-                                    <UserSuggestionSuggestedUserMainDIV2UnameAnchor href="/">
-                                      <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV1>
-                                        <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV2>
-                                          <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV3>
-                                            <Skeleton
-                                              animation="wave"
-                                              height={10}
-                                              width="40%"
-                                            />
-                                          </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV3>
-                                        </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV2>
-                                      </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV1>
-                                    </UserSuggestionSuggestedUserMainDIV2UnameAnchor>
-                                  </UserSuggestionSuggestedUserMainDIV2UnameContent>
-                                </UserSuggestionSuggestedUserMainDIV2UnameWrapper>
-                                <UserSuggestionSuggestedUserMainDIV2Utype>
-                                  <UserSuggestionSuggestedUserMainDIV2UtypeDIV1>
-                                    <Skeleton
-                                      animation="wave"
-                                      height={10}
-                                      width="40%"
-                                    />
-                                  </UserSuggestionSuggestedUserMainDIV2UtypeDIV1>
-                                </UserSuggestionSuggestedUserMainDIV2Utype>
-                              </UserSuggestionSuggestedUserMainDIV2>
-                              <UserSuggestionSuggestedUserMainDIV3>
-                                <Skeleton
-                                  animation="wave"
-                                  height={20}
-                                  width="50px"
-                                />
-                              </UserSuggestionSuggestedUserMainDIV3>
-                            </UserSuggestionSuggestedUserMainDIV>
+                          <UserSuggestionSuggestedUserMainDIV
+                            key={'SuggestedUserSkeleton'.concat(index)}
+                          >
+                            <UserSuggestionSuggestedUserMainDIV1>
+                              <UserSuggestionSuggestedUserMainDIV1Content
+                                role="button"
+                                tabIndex="0"
+                              >
+                                <UserSuggestionSuggestedUserMainDIV1Canvas />
+                                <UserSuggestionSuggestedUserMainDIV1Anchor href="/">
+                                  <Skeleton
+                                    animation="wave"
+                                    variant="circle"
+                                    width="100%"
+                                    height="100%"
+                                  />
+                                </UserSuggestionSuggestedUserMainDIV1Anchor>
+                              </UserSuggestionSuggestedUserMainDIV1Content>
+                            </UserSuggestionSuggestedUserMainDIV1>
+                            <UserSuggestionSuggestedUserMainDIV2>
+                              <UserSuggestionSuggestedUserMainDIV2UnameWrapper>
+                                <UserSuggestionSuggestedUserMainDIV2UnameContent>
+                                  <UserSuggestionSuggestedUserMainDIV2UnameAnchor href="/">
+                                    <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV1>
+                                      <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV2>
+                                        <UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV3>
+                                          <Skeleton
+                                            animation="wave"
+                                            height={10}
+                                            width="40%"
+                                          />
+                                        </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV3>
+                                      </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV2>
+                                    </UserSuggestionSuggestedUserMainDIV2UnameAnchorDIV1>
+                                  </UserSuggestionSuggestedUserMainDIV2UnameAnchor>
+                                </UserSuggestionSuggestedUserMainDIV2UnameContent>
+                              </UserSuggestionSuggestedUserMainDIV2UnameWrapper>
+                              <UserSuggestionSuggestedUserMainDIV2Utype>
+                                <UserSuggestionSuggestedUserMainDIV2UtypeDIV1>
+                                  <Skeleton
+                                    animation="wave"
+                                    height={10}
+                                    width="40%"
+                                  />
+                                </UserSuggestionSuggestedUserMainDIV2UtypeDIV1>
+                              </UserSuggestionSuggestedUserMainDIV2Utype>
+                            </UserSuggestionSuggestedUserMainDIV2>
+                            <UserSuggestionSuggestedUserMainDIV3>
+                              <Skeleton
+                                animation="wave"
+                                height={20}
+                                width="50px"
+                              />
+                            </UserSuggestionSuggestedUserMainDIV3>
+                          </UserSuggestionSuggestedUserMainDIV>
                           ))}
                     </UserSuggestionSuggestedUserContent2>
                   </UserSuggestionSuggestedUserContent1>

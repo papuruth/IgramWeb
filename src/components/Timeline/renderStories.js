@@ -1,16 +1,17 @@
-import Stories from '@/components/Stories';
+import { Close } from '@material-ui/icons';
+import * as moment from 'moment';
+import React from 'react';
+import Stories from 'react-insta-stories';
 import {
   fetchStoriesItemsAction,
   markAsSeenStoryAction,
 } from '@/redux/timeline/timelineAction';
-import { Close } from '@material-ui/icons';
-import * as moment from 'moment';
-import React from 'react';
 import {
   StoriesContainer,
   StoriesContainerCloseButton,
   StoriesContainerContent,
 } from './styles';
+import { WORKER_URL } from '@/utils/constants';
 
 export default class RenderStories extends React.PureComponent {
   constructor(props) {
@@ -45,7 +46,6 @@ export default class RenderStories extends React.PureComponent {
         taken_at,
         user,
         image_versions2,
-        viewers,
         video_versions,
         video_duration,
         link_text,
@@ -53,27 +53,51 @@ export default class RenderStories extends React.PureComponent {
       }) => {
         if (video_versions) {
           return {
-            url: video_versions[0].url,
-            seeMore: link_text && story_cta[0].links[0].webUri,
+            url: `${WORKER_URL}${video_versions[0].url}`,
+            seeMore: ({ close }) => {
+              return (
+                <div
+                  onClick={close}
+                  onKeyPress={close}
+                  tabIndex={0}
+                  role="button"
+                >
+                  <a href={link_text && story_cta[0].links[0].webUri}>
+                    {link_text}
+                  </a>
+                </div>
+              );
+            },
             type: 'video',
             duration: video_duration,
             header: {
               heading: user.pk === userPk ? 'Your Story' : user.username,
               subheading: moment.unix(taken_at).fromNow(),
-              profileImage: user.profile_pic_url,
+              profileImage: `${WORKER_URL}${user.profile_pic_url}`,
             },
-            viewers: user.pk === userPk ? viewers : '',
           };
         }
         return {
-          url: image_versions2.candidates[0].url,
-          seeMore: link_text && story_cta[0].links[0].webUri,
+          url: `${WORKER_URL}${image_versions2.candidates[0].url}`,
+          seeMore: ({ close }) => {
+            return (
+              <div
+                onClick={close}
+                onKeyPress={close}
+                tabIndex={0}
+                role="button"
+              >
+                <a href={link_text && story_cta[0].links[0].webUri}>
+                  {link_text}
+                </a>
+              </div>
+            );
+          },
           header: {
             heading: user.pk === userPk ? 'Your Story' : user.username,
             subheading: moment.unix(taken_at).fromNow(),
-            profileImage: user.profile_pic_url,
+            profileImage: `${WORKER_URL}${user.profile_pic_url}`,
           },
-          viewers: user.pk === userPk ? viewers : '',
         };
       },
     );
@@ -91,10 +115,7 @@ export default class RenderStories extends React.PureComponent {
     const reelLength = userReels.length;
     const { storyPosition } = this.state;
     const { dispatch, closeStoryContainer } = this.props;
-    if (
-      storyPosition < reelLength &&
-      !(userPk === userStoriesItems[0].user.pk)
-    ) {
+    if (storyPosition < reelLength && userPk !== userStoriesItems[0].user.pk) {
       setTimeout(() => {
         const userId = userReels[storyPosition].user.pk;
         dispatch(fetchStoriesItemsAction(userId));
@@ -145,31 +166,37 @@ export default class RenderStories extends React.PureComponent {
     console.log(currentIndex, userStoriesItems);
     return (
       <StoriesContainer>
-        <StoriesContainerCloseButton
-          onKeyPress={this.closeStoryContainer}
-          onClick={this.closeStoryContainer}
-          type="submit">
-          <Close style={{ fontSize: '40px' }} />
-        </StoriesContainerCloseButton>
-        {userStoriesItems.length > 0 && (
-          <StoriesContainerContent id="stories-container">
-            <Stories
-              stories={this.storyContent(userStoriesItems)}
-              defaultInterval={5000}
-              width={window.innerWidth}
-              height={window.innerWidth < 570 ? window.innerHeight - 50 : 839}
-              currentIndex={
-                currentIndex && currentIndex + 1 < userStoriesItems?.length
-                  ? currentIndex + 1
-                  : 0
-              }
-              onPreviousStory={() => this.switchPreviousStory(userReels)}
-              onStoryStart={this.changeSeen}
-              onStoryEnd={(storyId) => this.storyEnd(storyId, userStoriesItems)}
-              onAllStoriesEnd={() => this.changeStory(userReels)}
-            />
-          </StoriesContainerContent>
-        )}
+        <div className="stories__content">
+          <div className="story__btn__section">
+            <StoriesContainerCloseButton
+              onKeyPress={this.closeStoryContainer}
+              onClick={this.closeStoryContainer}
+              type="submit"
+            >
+              <Close style={{ fontSize: '40px' }} />
+            </StoriesContainerCloseButton>
+          </div>
+          {userStoriesItems.length > 0 && (
+            <StoriesContainerContent id="stories-container">
+              <Stories
+                stories={this.storyContent(userStoriesItems)}
+                defaultInterval={1500}
+                width={300}
+                height={window.innerHeight - 50}
+                currentIndex={
+                  currentIndex && currentIndex + 1 < userStoriesItems?.length
+                    ? currentIndex + 1
+                    : 0
+                }
+                onPreviousStory={() => this.switchPreviousStory(userReels)}
+                onStoryStart={this.changeSeen}
+                onStoryEnd={(storyId) =>
+                  this.storyEnd(storyId, userStoriesItems)}
+                onAllStoriesEnd={() => this.changeStory(userReels)}
+              />
+            </StoriesContainerContent>
+          )}
+        </div>
       </StoriesContainer>
     );
   }

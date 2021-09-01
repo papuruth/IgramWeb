@@ -1,4 +1,5 @@
-.react-multiple-carousel__arrow, .react-multiple-carousel__arrow:hover {
+.react-multiple-carousel__arrow,
+.react-multiple-carousel__arrow:hover {
   background: #fff;
   min-width: 30px;
   min-height: 30px;
@@ -21,4 +22,26 @@
 
 .react-multi-carousel-list {
   margin-left: 10px;
+}
+
+.story__btn__section {
+  display: flex;
+  justify-content: flex-end;
+}
+.stories__content {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  flex-direction: row-reverse;
+  width: 80%;
+  margin: auto;
+  height: 600px;
+}
+.story__container {
+  display: flex;
+  flex-direction: column;
+}
+.story__content {
+  display: flex;
+  height: 100%;
 }

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { css } from '@emotion/core';
-import verified from '@/assets/images/verified.svg';
 import { Link } from 'react-router-dom';
+import verified from '@/assets/images/verified.svg';
 
 const commonDIV = styled.div`
   align-items: stretch;
@@ -999,6 +999,7 @@ export const StoriesContainer = styled.div`
   height: 100%;
   display: flex;
   overflow-y: auto;
+  flex-direction: column;
   align-items: center;
   animation-name: fadeIn;
   animation-duration: 0.4s;
@@ -1008,7 +1009,6 @@ export const StoriesContainer = styled.div`
   z-index: 1300;
   @media (max-width: 570px) {
     display: flex;
-    flex-direction: column;
   }
 `;
 
@@ -1016,10 +1016,8 @@ export const StoriesContainerCloseButton = styled.button`
   ${StoriesContainer}, & {
     background: transparent;
     color: #fff;
-    position: fixed;
     top: 30px;
     right: 30px;
-    z-index: 10;
     @media (max-width: 570px) {
       position: initial;
     }
@@ -1033,7 +1031,7 @@ export const StoriesContainerContent = styled.div`
     position: inherit;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 60%;
     @media (max-width: 570px) {
       position: initial;
     }
