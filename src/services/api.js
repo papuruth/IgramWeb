@@ -1,14 +1,30 @@
 import axios from 'axios';
 import storage from '@/utils/storage';
 import { API_BASE_URL } from '@/utils/environment';
+import { checkEmpty } from '@/utils/commonFunctions';
 
 const api = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
   const token = storage.getToken();
-
+  const username = storage.getUsername();
+  if (username) {
+    if (config.method === 'get') {
+      if (!checkEmpty(config?.params)) {
+        Object.assign(config.params, { username });
+      } else {
+        Object.assign(config, { params: { username } });
+      }
+    } else if (config.method === 'post') {
+      if (!checkEmpty(config?.data)) {
+        Object.assign(config.data, { username });
+      } else {
+        Object.assign(config, { data: { username } });
+      }
+    }
+  }
   const headers = {
     ...config.headers,
     Accept: 'application/json',

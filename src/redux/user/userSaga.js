@@ -8,6 +8,7 @@ import { persistor } from '@/store/store';
 import toast from '@/utils/toast';
 import { userConstants } from './userConstants';
 import { loaderConstants } from '../Loader/loaderConstants';
+import storage from '@/utils/storage';
 
 export const success = (type, payload) => ({
   type,
@@ -30,6 +31,7 @@ const authenticateUser = async (payload) => {
           userId,
         },
       });
+      storage.setUsername(username);
       await sessionService.saveSession(fullUserInfo.data.userInfo);
       await sessionService.saveUser(fullUserInfo.data.userInfo);
     }
@@ -73,6 +75,7 @@ export const verifyOtpLogin = async (otpDetails) => {
           userId,
         },
       });
+      storage.setUsername(fullUserInfo.data.userInfo?.username);
       await sessionService.saveSession(fullUserInfo.data.userInfo);
       await sessionService.saveUser(fullUserInfo.data.userInfo);
     }
@@ -113,6 +116,7 @@ const userAuthHandleCheckpoint = async (otp) => {
           userId,
         },
       });
+      storage.setUsername(fullUserInfo.data.userInfo?.username);
       await sessionService.saveSession(fullUserInfo.data.userInfo);
       await sessionService.saveUser(fullUserInfo.data.userInfo);
     }
@@ -201,7 +205,7 @@ function* userLogout(action) {
     yield persistor.pause();
     yield persistor.flush();
     yield persistor.purge();
-    localStorage.removeItem('persist:root');
+    storage.clearAllStorage();
     yield put(yield call(success, userConstants.USER_LOGOUT_SUCCESS, data));
     history.push('/');
   } else {

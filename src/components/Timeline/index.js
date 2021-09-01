@@ -463,7 +463,6 @@ class Timeline extends React.Component {
   render() {
     const { data, hasMore, classes, userReels, user, history, suggestedUser } =
       this.props;
-    console.log(this.props);
     const filteredTImeline =
       data && data.filter((item) => 'media_or_ad' in item);
     const {
@@ -663,7 +662,11 @@ class Timeline extends React.Component {
                               aria-label="user_image"
                               alt={username}
                               className={classes.avatar}
-                              src={`${WORKER_URL}${profile_pic_url}` || <AccountCircle />}
+                              src={
+                                `${WORKER_URL}${profile_pic_url}` || (
+                                  <AccountCircle />
+                                )
+                              }
                             />
                           )}
                           action={(

@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
+import { Helmet } from 'react-helmet';
 import {
   timelineAction,
   fetchUserReelAction,
   fetchSuggestedUserAction,
 } from '@/redux/timeline/timelineAction';
-import React from 'react';
-import { Helmet } from 'react-helmet';
 import Timeline from '../Timeline';
 import { StyledContainer } from './styles';
 

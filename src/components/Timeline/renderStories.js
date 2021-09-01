@@ -54,20 +54,27 @@ export default class RenderStories extends React.PureComponent {
         if (video_versions) {
           return {
             url: `${WORKER_URL}${video_versions[0].url}`,
-            seeMore: ({ close }) => {
-              return (
-                <div
-                  onClick={close}
-                  onKeyPress={close}
-                  tabIndex={0}
-                  role="button"
-                >
-                  <a href={link_text && story_cta[0].links[0].webUri}>
-                    {link_text}
-                  </a>
-                </div>
-              );
-            },
+            seeMore: link_text
+              ? ({ close }) => {
+                  return (
+                    <div
+                      onClick={close}
+                      onKeyPress={close}
+                      tabIndex={0}
+                      role="button"
+                      style={{
+                        background: '#fff',
+                        height: '100%',
+                        width: '100%',
+                      }}
+                    >
+                      <a href={link_text && story_cta[0].links[0].webUri}>
+                        {link_text}
+                      </a>
+                    </div>
+                  );
+                }
+              : null,
             type: 'video',
             duration: video_duration,
             header: {
@@ -79,20 +86,27 @@ export default class RenderStories extends React.PureComponent {
         }
         return {
           url: `${WORKER_URL}${image_versions2.candidates[0].url}`,
-          seeMore: ({ close }) => {
-            return (
-              <div
-                onClick={close}
-                onKeyPress={close}
-                tabIndex={0}
-                role="button"
-              >
-                <a href={link_text && story_cta[0].links[0].webUri}>
-                  {link_text}
-                </a>
-              </div>
-            );
-          },
+          seeMore: link_text
+            ? ({ close }) => {
+                return (
+                  <div
+                    onClick={close}
+                    onKeyPress={close}
+                    tabIndex={0}
+                    role="button"
+                    style={{
+                      background: '#fff',
+                      height: '100%',
+                      width: '100%',
+                    }}
+                  >
+                    <a href={link_text && story_cta[0].links[0].webUri}>
+                      {link_text}
+                    </a>
+                  </div>
+                );
+              }
+            : null,
           header: {
             heading: user.pk === userPk ? 'Your Story' : user.username,
             subheading: moment.unix(taken_at).fromNow(),
