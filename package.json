@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "start": "craco start",
     "build": "cross-env GENERATE_SOURCEMAP=false craco build",
