@@ -8,11 +8,8 @@ import { BookmarkBorderOutlined, GridOn, LiveTv } from '@material-ui/icons';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import Toast from '@/utils/toast';
-import {
-  fullUserInfoAction,
-  searchExactUserAction,
-  userFeedAction,
-} from '@/redux/user/userAction';
+import { checkEmpty, equalityChecker } from '@/utils/commonFunctions';
+import { searchExactUserAction } from '@/redux/user/userAction';
 import { loaderStartAction } from '@/redux/Loader/loaderAction';
 import { RenderPrivateAccount } from './renderPrivateAccount';
 import { RenderProfileHeader } from './renderProfileHeader';
@@ -34,13 +31,7 @@ const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && (
         <Box
           style={{
@@ -61,63 +52,24 @@ class Profile extends React.Component {
       tab: 0,
       showPrivate: false,
     };
-    const { dispatch, user, userFeeds, location } = props;
-    const { pk, is_private, username } = location?.state || user;
-    console.log(is_private, location);
-    if (!location.state && location?.pathname !== user.username) {
-      dispatch(loaderStartAction());
-      dispatch(searchExactUserAction(location?.pathname?.slice(1)));
-    } else {
-      dispatch(loaderStartAction());
-      dispatch(fullUserInfoAction(pk, user.pk, username));
-      if (location?.pathname === user?.username) {
-        dispatch(userFeedAction(pk, userFeeds, username));
-      }
-    }
+    const { dispatch, user, userFeeds, match } = props;
+    const { username } = match?.params || {};
+    dispatch(loaderStartAction());
+    dispatch(searchExactUserAction(username, user, userFeeds));
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      dispatch,
-      user,
-      location,
-      searchExactUserInfo,
-      profilePhotoUpdated,
-      profilePhotoRemoved,
-    } = this.props;
-    console.log(location);
-    const { pk, username } = location.state || user;
-    if (location.pathname !== prevProps.location.pathname) {
-      dispatch(loaderStartAction());
-      dispatch(fullUserInfoAction(pk, user.pk, username));
-      if (location?.pathname === user?.username) {
-        dispatch(userFeedAction(pk, {}, username));
-      }
-    }
-    if (
-      !location.state &&
-      Object.keys(prevProps.searchExactUserInfo).length === 0 &&
-      username !== user.username
-    ) {
-      const userPk = searchExactUserInfo.pk;
-      dispatch(loaderStartAction());
-      dispatch(fullUserInfoAction(userPk, user.pk, username));
-      if (location?.pathname === user?.username) {
-        dispatch(userFeedAction(userPk, {}, username));
-      }
-    }
-
-    if (
-      profilePhotoUpdated !== prevProps.profilePhotoUpdated &&
-      profilePhotoUpdated
-    ) {
+    const { profilePhotoUpdated, profilePhotoRemoved, match, user, userFeeds, dispatch } = this.props;
+    if (profilePhotoUpdated !== prevProps.profilePhotoUpdated && profilePhotoUpdated) {
       Toast.success('Profile photo updated.');
     }
-    if (
-      profilePhotoRemoved !== prevProps.profilePhotoRemoved &&
-      profilePhotoRemoved
-    ) {
+    if (profilePhotoRemoved !== prevProps.profilePhotoRemoved && profilePhotoRemoved) {
       Toast.success('Profile photo removed.');
+    }
+    if (!checkEmpty(match?.params) && !equalityChecker(match?.params?.username, prevProps.match?.params?.username)) {
+      const { username } = match?.params || {};
+      dispatch(loaderStartAction());
+      dispatch(searchExactUserAction(username, user, userFeeds));
     }
   }
 
@@ -153,16 +105,10 @@ class Profile extends React.Component {
     } = this.props;
     const { username, full_name } = user;
     const { tab, showPrivate } = this.state;
-    const { pk, is_private } = location.state ? userInfo : userInfo || user;
+    const { pk, is_private } = userInfo || {};
     const privateUser = is_private && pk !== user.pk;
-    const suggestedUserData =
-      Object.keys(suggestedUser).length > 0 && suggestedUser.users
-        ? suggestedUser.users
-        : '';
-    const userHighlightsData =
-      Object.keys(highlights).length > 0 && highlights.tray
-        ? highlights.tray
-        : '';
+    const suggestedUserData = Object.keys(suggestedUser).length > 0 && suggestedUser.users ? suggestedUser.users : '';
+    const userHighlightsData = Object.keys(highlights).length > 0 && highlights.tray ? highlights.tray : '';
     const { following } = pk !== user.pk ? friendship : '';
 
     return (
@@ -171,9 +117,7 @@ class Profile extends React.Component {
           <meta charSet="utf-8" />
           <title>
             {full_name}
-            {`${
-              full_name ? ' @' : ''
-            }${username} • Instagram photos and videos`}
+            {`${full_name ? ' @' : ''}${username} • Instagram photos and videos`}
           </title>
         </Helmet>
         <MainContainer>
@@ -202,26 +146,14 @@ class Profile extends React.Component {
             {allFeeds.length > 0 && (
               <>
                 <Paper className={classes.root}>
-                  <Tabs
-                    value={tab}
-                    onChange={this.handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
+                  <Tabs value={tab} onChange={this.handleChange} indicatorColor="primary" textColor="primary" centered>
                     <Tab icon={<GridOn />} label="POSTS" />
                     <Tab icon={<LiveTv />} label="IGTV" />
                     <Tab icon={<BookmarkBorderOutlined />} label="SAVED" />
                   </Tabs>
                 </Paper>
                 <TabPanel value={tab} index={0}>
-                  <RenderUserFeeds
-                    allFeeds={allFeeds}
-                    pk={pk}
-                    userFeeds={userFeeds}
-                    hasMore={hasMore}
-                    dispatch={dispatch}
-                  />
+                  <RenderUserFeeds allFeeds={allFeeds} pk={pk} userFeeds={userFeeds} hasMore={hasMore} dispatch={dispatch} />
                 </TabPanel>
               </>
             )}

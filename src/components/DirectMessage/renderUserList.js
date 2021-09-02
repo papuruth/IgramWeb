@@ -2,13 +2,14 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { sendMarkAsReadAction } from '@/redux/chats/chatsAction';
-import Toast from '@/utils/toast';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import { VolumeOff } from '@material-ui/icons';
 import React, { Component } from 'react';
+import Toast from '@/utils/toast';
+import { WORKER_URL } from '@/utils/constants';
+import { sendMarkAsReadAction } from '@/redux/chats/chatsAction';
 import {
   addNotification,
   getChatThumbnail,
@@ -72,9 +73,7 @@ class RenderUserList extends Component {
           notif: { ...notif, ...newNotif },
         });
         Toast.info(
-          `You have a new ${
-            typeof chat_.items[0].text === 'string' ? 'text' : 'media'
-          } message from ${getChatTitle(chat_)}${
+          `You have a new ${typeof chat_.items[0].text === 'string' ? 'text' : 'media'} message from ${getChatTitle(chat_)}${
             chat_.items[0].text ? ': '.concat(chat_.items[0].text) : '.'
           }`,
         );
@@ -98,9 +97,7 @@ class RenderUserList extends Component {
             });
             if (!isActive(chat_)) {
               Toast.info(
-                `You have a new ${
-                  typeof chat_.items[0].text === 'string' ? 'text' : 'media'
-                } message from ${getChatTitle(chat_)}${
+                `You have a new ${typeof chat_.items[0].text === 'string' ? 'text' : 'media'} message from ${getChatTitle(chat_)}${
                   chat_.items[0].text ? ': '.concat(chat_.items[0].text) : '.'
                 }`,
               );
@@ -108,11 +105,7 @@ class RenderUserList extends Component {
           }
           if (isActive(chat_)) {
             const readResult = markAsRead(chat_.thread_id, liEle);
-            if (
-              readResult
-              && chat_.thread_id in notif
-              && notif[chat_.thread_id].markAsRead
-            ) {
+            if (readResult && chat_.thread_id in notif && notif[chat_.thread_id].markAsRead) {
               dispatch(sendMarkAsReadAction(chat_));
               delete notif[chat_.thread_id];
               this.setState({
@@ -153,27 +146,13 @@ class RenderUserList extends Component {
       userList.push(li);
       registerChatUser(chat_);
     });
-    return userList.map(
-      ({
-        direction,
-        chatId,
-        chatTitle,
-        thumbnail,
-        chat,
-        msgPreview,
-        presence,
-        muted,
-      }) => {
-        const msgPreviewClass = direction === 'outward' ? 'outward' : 'inward';
-        return (
-          <li
-            key={chatId}
-            className="col-12 p3"
-            id={chatId ? `chatlist-${chatId}` : chatTitle}
-            onClick={() => renderChat(chat)}
-          >
-            {typeof thumbnail === 'string' ? (
-              presence ? (
+    return userList.map(({ direction, chatId, chatTitle, thumbnail, chat, msgPreview, presence, muted }) => {
+      const msgPreviewClass = direction === 'outward' ? 'outward' : 'inward';
+      return (
+        <li key={chatId} className="col-12 p3" id={chatId ? `chatlist-${chatId}` : chatTitle} onClick={() => renderChat(chat)}>
+          {typeof thumbnail === 'string' ? (
+            <>
+              {presence && (
                 <StyledBadge
                   overlap="circle"
                   anchorOrigin={{
@@ -182,40 +161,35 @@ class RenderUserList extends Component {
                   }}
                   variant="dot"
                 >
-                  <Avatar alt="Remy Sharp" src={thumbnail} />
+                  <Avatar alt="Remy Sharp" src={`${WORKER_URL}${thumbnail}`} />
                 </StyledBadge>
-              ) : (
-                <Avatar alt="Remy Sharp" src={thumbnail} />
-              )
-            ) : (
-              thumbnail.forEach((imageUrl, index) => {
-                if (index < 5) {
-                  return (
-                    <div>
-                      <img
-                        className={`thumb ${index === 0 ? '' : 'group'}`}
-                        src={imageUrl}
-                        alt=""
-                      />
-                    </div>
-                  );
-                }
-                return null;
-              })
-            )}
-            <div className="username ml-3 d-none d-sm-inline-block">
-              <b>
-                {chatTitle}
-                {' '}
-                {muted ? <VolumeOff /> : ''}
-              </b>
-              <br />
-              <span className={msgPreviewClass}>{msgPreview}</span>
-            </div>
-          </li>
-        );
-      },
-    );
+              )}
+              {!presence && <Avatar alt="Remy Sharp" src={`${WORKER_URL}${thumbnail}`} />}
+            </>
+          ) : (
+            thumbnail.forEach((imageUrl, index) => {
+              if (index < 5) {
+                return (
+                  <div>
+                    <img className={`thumb ${index === 0 ? '' : 'group'}`} src={`${WORKER_URL}${imageUrl}`} alt="" />
+                  </div>
+                );
+              }
+              return null;
+            })
+          )}
+          <div className="username ml-3 d-none d-sm-inline-block">
+            <b>
+              {chatTitle} 
+              {' '}
+              {muted ? <VolumeOff /> : ''}
+            </b>
+            <br />
+            <span className={msgPreviewClass}>{msgPreview}</span>
+          </div>
+        </li>
+      );
+    });
   }
 }
 

@@ -12,15 +12,15 @@ api.interceptors.request.use((config) => {
   const username = storage.getUsername();
   if (username) {
     if (config.method === 'get') {
-      if (!checkEmpty(config?.params)) {
+      if (!checkEmpty(config?.params) && !config?.params?.username) {
         Object.assign(config.params, { username });
-      } else {
+      } else if (checkEmpty(config?.params)) {
         Object.assign(config, { params: { username } });
       }
     } else if (config.method === 'post') {
-      if (!checkEmpty(config?.data)) {
+      if (!checkEmpty(config?.data) && !config?.data?.username && !(config?.data instanceof FormData)) {
         Object.assign(config.data, { username });
-      } else {
+      } else if (checkEmpty(config?.data) && !(config?.data instanceof FormData)) {
         Object.assign(config, { data: { username } });
       }
     }

@@ -1,6 +1,4 @@
 /** @jsx jsx */
-import { pendingInboxRequestsAction } from '@/redux/chats/chatsAction';
-import { loaderAction } from '@/redux/Loader/loaderAction';
 import { jsx } from '@emotion/core';
 import { Button, withStyles } from '@material-ui/core';
 import React from 'react';
@@ -8,6 +6,8 @@ import { Helmet } from 'react-helmet';
 import { ClipLoader } from 'react-spinners';
 import { ChevronLeft } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { loaderAction } from '@/redux/Loader/loaderAction';
+import { pendingInboxRequestsAction } from '@/redux/chats/chatsAction';
 import ChatBox from '../DirectMessage/ChatBox';
 import { isActive, setActive } from '../DirectMessage/helperFunctions';
 import RenderPendingRequests from './renderPendingRequests';
@@ -76,7 +76,6 @@ class DirectPendingRequests extends React.PureComponent {
     } = this.props;
     const { mountPendingChat, pendingChat } = this.state;
     const { inviter, thread_title } = pendingChat;
-    console.log(location);
     return (
       <StyledContainer>
         <Helmet>
@@ -93,7 +92,8 @@ class DirectPendingRequests extends React.PureComponent {
                       <Link to={{
                         pathname: '/direct/inbox',
                         state: {pending_requests_total: location.state.pending_requests_total}
-                      }}>
+                      }}
+                      >
                         <ChevronLeft fontSize="large" />
                       </Link>
                     </div>
@@ -126,7 +126,8 @@ class DirectPendingRequests extends React.PureComponent {
                     color="secondary"
                     classes={{ label: classes.pendingRequestBtnLabel }}
                     style={{ width: '100%' }}
-                    onClick={this.deleteAllRequests}>
+                    onClick={this.deleteAllRequests}
+                  >
                     Delete All
                   </Button>
                 </div>
@@ -157,14 +158,25 @@ class DirectPendingRequests extends React.PureComponent {
                 <div css={pendingMessageWrapper}>
                   <div css={pendingMessageContent}>
                     <p css={pendingMessageContentTitle}>
-                      <b>{thread_title}</b> wants to send you a message.
+                      <b>{thread_title}</b>
+                      {' '}
+                      wants to send you a message.
                     </p>
                     <p css={pendingMessageContentInfo}>
-                      {inviter.follower_count} followers {inviter.media_count}{' '}
+                      {inviter.follower_count}
+                      {' '}
+                      followers
+                      {' '}
+                      {inviter.media_count}
+                      {' '}
                       posts
                     </p>
                     <p css={pendingMessageContentNote}>
-                      Do you want to allow {thread_title} to send you messages
+                      Do you want to allow 
+                      {' '}
+                      {thread_title}
+                      {' '}
+                      to send you messages
                       from now on? They&apos;ll only know you&apos;ve seen their
                       request if you accept it.
                     </p>
@@ -176,7 +188,8 @@ class DirectPendingRequests extends React.PureComponent {
                         root: classes.pendingRequestBtn,
                         label: classes.pendingRequestBtnLabel,
                       }}
-                      onClick={this.blockUser}>
+                      onClick={this.blockUser}
+                    >
                       Block
                     </Button>
                     <Button
@@ -185,14 +198,16 @@ class DirectPendingRequests extends React.PureComponent {
                         root: classes.pendingRequestBtn,
                         label: classes.pendingRequestBtnLabel,
                       }}
-                      onClick={this.deleteChat}>
+                      onClick={this.deleteChat}
+                    >
                       Delete
                     </Button>
                     <Button
                       color="primary"
                       style={{ width: '100%', color: '#000' }}
                       classes={{ label: classes.pendingRequestBtnLabel }}
-                      onClick={this.acceptRequest}>
+                      onClick={this.acceptRequest}
+                    >
                       Accept
                     </Button>
                   </div>

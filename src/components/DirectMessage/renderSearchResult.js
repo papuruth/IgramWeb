@@ -4,12 +4,13 @@
 import Avatar from '@material-ui/core/Avatar';
 import { AccountCircle } from '@material-ui/icons';
 import React from 'react';
+import { WORKER_URL } from '@/utils/constants';
 
 const RenderSearchResult = ({ usersList, renderChat }) =>
   usersList.map((user) => {
     const { username, profile_pic_url, pk } = user;
     const chatTitle = username;
-    const thumbnail = profile_pic_url;
+    const thumbnail = `${WORKER_URL}${profile_pic_url}`;
     return (
       <li
         key={pk}

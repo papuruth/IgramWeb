@@ -48,16 +48,20 @@ export default function RenderPendingRequests({
           <li
             key={chatId}
             className="col-12 p3"
-            id={chatId ? `chatlist-${chatId}` : chatTitle}>
+            id={chatId ? `chatlist-${chatId}` : chatTitle}
+          >
             {thumbnail && <Avatar alt="Remy Sharp" src={thumbnail} />}
             <div
               className="username ml-3 d-none d-sm-inline-block"
               onClick={() => renderChat(chat)}
               onKeyPress={() => renderChat(chat)}
               tabIndex={0}
-              role="menuitem">
+              role="menuitem"
+            >
               <b>
-                {chatTitle} {muted ? <VolumeOff /> : ''}
+                {chatTitle} 
+                {' '}
+                {muted ? <VolumeOff /> : ''}
               </b>
               <br />
               <span className={msgPreviewClass}>{msgPreview}</span>

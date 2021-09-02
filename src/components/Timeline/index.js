@@ -1,8 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /** @jsx jsx */
-import { ReactComponent as Comment } from '@/assets/images/comment.svg';
-import { ReactComponent as Like } from '@/assets/images/Like.svg';
-import { ReactComponent as SharePost } from '@/assets/images/SharePost.svg';
 import { jsx } from '@emotion/core';
 import { ButtonBase, Divider, InputBase, Tooltip } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
@@ -28,6 +25,9 @@ import { Player } from 'video-react';
 import BigPlayButton from 'video-react/lib/components/BigPlayButton';
 import ControlBar from 'video-react/lib/components/control-bar/ControlBar';
 import Shortcut from 'video-react/lib/components/Shortcut';
+import { ReactComponent as Comment } from '@/assets/images/comment.svg';
+import { ReactComponent as Like } from '@/assets/images/Like.svg';
+import { ReactComponent as SharePost } from '@/assets/images/SharePost.svg';
 import Toast from '@/utils/toast';
 import { ReactComponent as Unlike } from '@/assets/images/Unlike.svg';
 import { WORKER_URL } from '@/utils/constants';

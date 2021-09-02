@@ -1,14 +1,15 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable require-yield */
-import history from '@/routes/history';
-import api from '@/services/api';
 import { sessionService } from 'redux-react-session';
 import { call, put, takeEvery, delay } from 'redux-saga/effects';
+import history from '@/routes/history';
+import api from '@/services/api';
 import { persistor } from '@/store/store';
 import toast from '@/utils/toast';
 import { userConstants } from './userConstants';
 import { loaderConstants } from '../Loader/loaderConstants';
 import storage from '@/utils/storage';
+import { checkEmpty } from '@/utils/commonFunctions';
 
 export const success = (type, payload) => ({
   type,
@@ -44,9 +45,7 @@ const authenticateUser = async (payload) => {
 function* userAuthSaga(action) {
   const data = yield call(authenticateUser, action.payload);
   if (data && data.type === 'authResponse') {
-    yield put(
-      yield call(success, userConstants.USER_AUTH_SUCCESS, data.payload),
-    );
+    yield put(yield call(success, userConstants.USER_AUTH_SUCCESS, data.payload));
     persistor.persist();
     history.push('/');
   }
@@ -89,9 +88,7 @@ function* userAuthVerifyOtp(action) {
   const data = yield call(verifyOtpLogin, action.payload);
   if (data && data.type === 'authResponse') {
     yield put(yield call(success, userConstants.GREETINGS_FLAG_SUCCESS, true));
-    yield put(
-      yield call(success, userConstants.USER_AUTH_SUCCESS, data.payload),
-    );
+    yield put(yield call(success, userConstants.USER_AUTH_SUCCESS, data.payload));
     persistor.persist();
     history.push('/');
   } else {
@@ -100,10 +97,7 @@ function* userAuthVerifyOtp(action) {
 }
 
 export function* userAuthVerifyOtpWatcherSaga() {
-  yield takeEvery(
-    userConstants.USER_AUTH_OTP_VERIFY_REQUEST,
-    userAuthVerifyOtp,
-  );
+  yield takeEvery(userConstants.USER_AUTH_OTP_VERIFY_REQUEST, userAuthVerifyOtp);
 }
 
 const userAuthHandleCheckpoint = async (otp) => {
@@ -127,15 +121,10 @@ const userAuthHandleCheckpoint = async (otp) => {
 };
 
 function* userAuthHandleCheckpointSaga(action) {
-  const { response, error } = yield call(
-    userAuthHandleCheckpoint,
-    action.payload,
-  );
+  const { response, error } = yield call(userAuthHandleCheckpoint, action.payload);
   if (response && response.type === 'authResponse') {
     yield put(yield call(success, userConstants.GREETINGS_FLAG_SUCCESS, true));
-    yield put(
-      yield call(success, userConstants.USER_AUTH_SUCCESS, response.payload),
-    );
+    yield put(yield call(success, userConstants.USER_AUTH_SUCCESS, response.payload));
     persistor.persist();
     history.push('/');
   } else {
@@ -144,10 +133,7 @@ function* userAuthHandleCheckpointSaga(action) {
 }
 
 export function* userAuthHandleCheckpointWatcherSaga() {
-  yield takeEvery(
-    userConstants.USER_AUTH_CHECKPOINT_HANDLE_REQUEST,
-    userAuthHandleCheckpointSaga,
-  );
+  yield takeEvery(userConstants.USER_AUTH_CHECKPOINT_HANDLE_REQUEST, userAuthHandleCheckpointSaga);
 }
 
 const userAuthStartCheckpointService = async () => {
@@ -162,29 +148,14 @@ const userAuthStartCheckpointService = async () => {
 function* userAuthStartCheckpointSaga() {
   const { response, error } = yield call(userAuthStartCheckpointService);
   if (response && response.type === 'authResponse') {
-    yield put(
-      yield call(
-        success,
-        userConstants.USER_AUTH_START_CHECKPOINT_SUCCESS,
-        response,
-      ),
-    );
+    yield put(yield call(success, userConstants.USER_AUTH_START_CHECKPOINT_SUCCESS, response));
   } else {
-    yield put(
-      yield call(
-        failure,
-        userConstants.USER_AUTH_START_CHECKPOINT_FAILURE,
-        error,
-      ),
-    );
+    yield put(yield call(failure, userConstants.USER_AUTH_START_CHECKPOINT_FAILURE, error));
   }
 }
 
 export function* userAuthStartCheckpointWatcherSaga() {
-  yield takeEvery(
-    userConstants.USER_AUTH_START_CHECKPOINT_REQUEST,
-    userAuthStartCheckpointSaga,
-  );
+  yield takeEvery(userConstants.USER_AUTH_START_CHECKPOINT_REQUEST, userAuthStartCheckpointSaga);
 }
 
 const userLogoutService = async ({ username }) => {
@@ -218,9 +189,7 @@ export function* userLogoutWatcherSaga() {
 }
 
 function* changeGreetingFlagSaga(action) {
-  yield put(
-    yield call(success, userConstants.GREETINGS_FLAG_SUCCESS, action.payload),
-  );
+  yield put(yield call(success, userConstants.GREETINGS_FLAG_SUCCESS, action.payload));
 }
 
 export function* changeGreetingFlagWatcher() {
@@ -239,15 +208,9 @@ const userFeedService = async ({ userId, feeds }) => {
 function* userFeedSaga(action) {
   const { response, error } = yield call(userFeedService, action.payload);
   if (response) {
-    yield put(
-      yield call(success, userConstants.FETCH_USER_FEED_SUCCESS, response),
-    );
+    yield put(yield call(success, userConstants.FETCH_USER_FEED_SUCCESS, response));
   } else {
-    yield put(
-      yield call(failure, userConstants.FETCH_USER_FEED_FAILURE, error),
-    );
-    yield delay(3000);
-    userFeedSaga(action);
+    yield put(yield call(failure, userConstants.FETCH_USER_FEED_FAILURE, error));
     yield put({ type: loaderConstants.PRIMARY_LOADER_STOP_REQUEST });
   }
 }
@@ -269,14 +232,10 @@ const fullUserInfoService = async ({ userId, pk }) => {
 function* fullUserInfoSaga(action) {
   const { response, error } = yield call(fullUserInfoService, action.payload);
   if (response) {
-    yield put(
-      yield call(success, userConstants.FETCH_FULL_USER_INFO_SUCCESS, response),
-    );
+    yield put(yield call(success, userConstants.FETCH_FULL_USER_INFO_SUCCESS, response));
     yield put({ type: loaderConstants.PRIMARY_LOADER_STOP_REQUEST });
   } else {
-    yield put(
-      yield call(failure, userConstants.FETCH_FULL_USER_INFO_FAILURE, error),
-    );
+    yield put(yield call(failure, userConstants.FETCH_FULL_USER_INFO_FAILURE, error));
     yield put({ type: loaderConstants.PRIMARY_LOADER_STOP_REQUEST });
   }
 }
@@ -285,9 +244,9 @@ export function* fullUserInfoWatcherSaga() {
   yield takeEvery(userConstants.FETCH_FULL_USER_INFO_REQUEST, fullUserInfoSaga);
 }
 
-const searchExactUserService = async (username) => {
+const searchExactUserService = async ({ username }) => {
   try {
-    const response = await api.get('/search-exact', { params: { username } });
+    const response = await api.get('/search-exact', { params: { searchText: username } });
     return { response: response.data };
   } catch (error) {
     return { error };
@@ -295,19 +254,25 @@ const searchExactUserService = async (username) => {
 };
 
 function* searchExactUserSaga(action) {
-  const { response, error } = yield call(
-    searchExactUserService,
-    action.payload,
-  );
-  if (response) {
-    yield put(
-      yield call(success, userConstants.SEARCH_EXACT_USER_SUCCESS, response),
-    );
+  const { response, error } = yield call(searchExactUserService, action.payload);
+  if (!checkEmpty(response)) {
+    const { currentUserData, userFeeds } = action?.payload || {};
+    const { pk, is_private, friendship_status } = response || {};
+    if (currentUserData?.pk === pk) {
+      yield put({ type: userConstants.FETCH_FULL_USER_INFO_REQUEST, payload: { userId: pk, pk: null } });
+      yield put({ type: userConstants.FETCH_USER_FEED_REQUEST, payload: { userId: pk, feeds: userFeeds, initial: true } });
+    } else {
+      yield put({ type: userConstants.FETCH_FULL_USER_INFO_REQUEST, payload: { userId: pk, pk: null } });
+      if (!is_private || friendship_status?.following) {
+        yield put({ type: userConstants.FETCH_USER_FEED_REQUEST, payload: { userId: pk, feeds: userFeeds, initial: true } });
+      } else {
+        yield put(yield call(success, userConstants.FETCH_USER_FEED_SUCCESS, { pk: null, feeds: [], newFeeds: [] }));
+      }
+    }
+    yield put(yield call(success, userConstants.SEARCH_EXACT_USER_SUCCESS, response));
     yield put({ type: loaderConstants.PRIMARY_LOADER_STOP_REQUEST });
   } else {
-    yield put(
-      yield call(failure, userConstants.SEARCH_EXACT_USER_FAILURE, error),
-    );
+    yield put(yield call(failure, userConstants.SEARCH_EXACT_USER_FAILURE, error));
     yield put({ type: loaderConstants.PRIMARY_LOADER_STOP_REQUEST });
   }
 }
@@ -329,18 +294,9 @@ const updateUserProfilePictureService = async (data) => {
 };
 
 function* updateUserProfilePictureSaga(action) {
-  const { response, error } = yield call(
-    updateUserProfilePictureService,
-    action.payload,
-  );
+  const { response, error } = yield call(updateUserProfilePictureService, action.payload);
   if (response) {
-    yield put(
-      yield call(
-        success,
-        userConstants.UPDATE_PROFILE_PICTURE_SUCCESS,
-        response,
-      ),
-    );
+    yield put(yield call(success, userConstants.UPDATE_PROFILE_PICTURE_SUCCESS, response));
     yield put(
       yield call(success, loaderConstants.SHOW_LOADER_SUCCESS, {
         type: 'profilePhotoLoader',
@@ -348,17 +304,12 @@ function* updateUserProfilePictureSaga(action) {
       }),
     );
   } else {
-    yield put(
-      yield call(failure, userConstants.UPDATE_PROFILE_PICTURE_FAILURE, error),
-    );
+    yield put(yield call(failure, userConstants.UPDATE_PROFILE_PICTURE_FAILURE, error));
   }
 }
 
 export function* updateUserProfilePictureWatcherSaga() {
-  yield takeEvery(
-    userConstants.UPDATE_PROFILE_PICTURE_REQUEST,
-    updateUserProfilePictureSaga,
-  );
+  yield takeEvery(userConstants.UPDATE_PROFILE_PICTURE_REQUEST, updateUserProfilePictureSaga);
 }
 
 const removeUserProfilePictureService = async () => {
@@ -376,13 +327,7 @@ const removeUserProfilePictureService = async () => {
 function* removeUserProfilePictureSaga() {
   const { response, error } = yield call(removeUserProfilePictureService);
   if (response) {
-    yield put(
-      yield call(
-        success,
-        userConstants.REMOVE_PROFILE_PICTURE_SUCCESS,
-        response,
-      ),
-    );
+    yield put(yield call(success, userConstants.REMOVE_PROFILE_PICTURE_SUCCESS, response));
     yield put(
       yield call(success, loaderConstants.SHOW_LOADER_SUCCESS, {
         type: 'profilePhotoLoader',
@@ -390,17 +335,12 @@ function* removeUserProfilePictureSaga() {
       }),
     );
   } else {
-    yield put(
-      yield call(failure, userConstants.REMOVE_PROFILE_PICTURE_FAILURE, error),
-    );
+    yield put(yield call(failure, userConstants.REMOVE_PROFILE_PICTURE_FAILURE, error));
   }
 }
 
 export function* removeUserProfilePictureWatcherSaga() {
-  yield takeEvery(
-    userConstants.REMOVE_PROFILE_PICTURE_REQUEST,
-    removeUserProfilePictureSaga,
-  );
+  yield takeEvery(userConstants.REMOVE_PROFILE_PICTURE_REQUEST, removeUserProfilePictureSaga);
 }
 
 const getCurrentUserService = async () => {
@@ -415,13 +355,9 @@ const getCurrentUserService = async () => {
 function* getCurrentUserSaga() {
   const { response, error } = yield call(getCurrentUserService);
   if (response) {
-    yield put(
-      yield call(success, userConstants.GET_CURRENT_USER_SUCCESS, response),
-    );
+    yield put(yield call(success, userConstants.GET_CURRENT_USER_SUCCESS, response));
   } else {
-    yield put(
-      yield call(failure, userConstants.GET_CURRENT_USER_FAILURE, error),
-    );
+    yield put(yield call(failure, userConstants.GET_CURRENT_USER_FAILURE, error));
     yield delay(3000);
     getCurrentUserSaga();
   }
@@ -443,9 +379,7 @@ const saveProfileService = async (formData) => {
 function* saveProfileSaga(action) {
   const { response, error } = yield call(saveProfileService, action.payload);
   if (response) {
-    yield put(
-      yield call(success, userConstants.GET_CURRENT_USER_SUCCESS, response),
-    );
+    yield put(yield call(success, userConstants.GET_CURRENT_USER_SUCCESS, response));
   } else {
     yield put(yield call(failure, userConstants.SAVE_PROFILE_FAILURE, error));
     toast.warning(error.message);

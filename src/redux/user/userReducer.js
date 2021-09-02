@@ -122,16 +122,23 @@ const userFeedInitialState = {
   searchExactUserInfo: {},
 };
 
-export function userFeedReducer(state = userFeedInitialState, action) {
+export function userFeedReducer(state = userFeedInitialState, action = {}) {
   switch (action.type) {
+    case userConstants.FETCH_USER_FEED_REQUEST:
+      if (action.payload?.initial) {
+        return {
+          ...state,
+          userFeeds: [],
+          allFeeds: [],
+          hasMore: false,
+        };
+      }
+      return state;
     case userConstants.FETCH_USER_FEED_SUCCESS:
       return {
         ...state,
         userFeeds: action.payload.feeds,
-        allFeeds:
-          state.userInfo.pk !== action.payload.pk
-            ? action.payload.newFeeds
-            : [...state.allFeeds, ...action.payload.newFeeds],
+        allFeeds: state.userInfo.pk !== action.payload.pk ? action.payload.newFeeds : [...state.allFeeds, ...action.payload.newFeeds],
         hasMore: action.payload.hasMore,
       };
     case userConstants.FETCH_USER_FEED_FAILURE:

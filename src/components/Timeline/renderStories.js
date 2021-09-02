@@ -177,7 +177,6 @@ export default class RenderStories extends React.PureComponent {
 
   render() {
     const { userStoriesItems, userReels, currentIndex } = this.props;
-    console.log(currentIndex, userStoriesItems);
     return (
       <StoriesContainer>
         <div className="stories__content">

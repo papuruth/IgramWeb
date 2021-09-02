@@ -1,19 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
-import {
-  blockUnblockUserAction,
-  deleteChatAction,
-  muteUserActon,
-  resetChatWindowAction,
-} from '@/redux/chats/chatsAction';
-import {
-  Avatar,
-  Button,
-  ButtonBase,
-  Divider,
-  Typography,
-} from '@material-ui/core';
+import { Avatar, Button, ButtonBase, Divider, Typography } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -24,12 +12,9 @@ import { withStyles } from '@material-ui/core/styles';
 import InfoIcon from '@material-ui/icons/Info';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  formatTime,
-  getChatThumbnail,
-  getChatTitle,
-  getUsernames,
-} from './helperFunctions';
+import { WORKER_URL } from '@/utils/constants';
+import { blockUnblockUserAction, deleteChatAction, muteUserActon, resetChatWindowAction } from '@/redux/chats/chatsAction';
+import { formatTime, getChatThumbnail, getChatTitle, getUsernames } from './helperFunctions';
 
 const useStyles = (theme) => ({
   buttonWrapper: {
@@ -91,9 +76,7 @@ class Title extends Component {
   componentDidMount() {
     const { chat_ } = this.props;
     const { muted } = chat_;
-    const isUserBlocked = chat_.users
-      ? chat_.users[0].friendship_status.blocking
-      : false;
+    const isUserBlocked = chat_.users ? chat_.users[0].friendship_status.blocking : false;
     this.setState({
       checked: muted,
       isUserBlocked,
@@ -102,10 +85,7 @@ class Title extends Component {
 
   componentDidUpdate(prevProps) {
     const { isUserBlocked, dispatch, isChatDeleted } = this.props;
-    if (
-      isUserBlocked !== prevProps.isUserBlocked ||
-      isChatDeleted !== prevProps.isChatDeleted
-    ) {
+    if (isUserBlocked !== prevProps.isUserBlocked || isChatDeleted !== prevProps.isChatDeleted) {
       dispatch(resetChatWindowAction(true));
     }
   }
@@ -152,25 +132,17 @@ class Title extends Component {
     dispatch(blockUnblockUserAction(userId, action));
   };
 
-  // reportUser = () => {
-  //   const { dispatch, chat_ } = this.props;
-  // };
-
   render() {
     const { classes } = this.props;
     const { showInfo, isUserBlocked, checked, chat_ } = this.state;
-    console.log(chat_);
-    const chatTitle = chat_?.thread_id
-      ? getChatTitle(chat_)
-      : getUsernames(chat_); // if chat_.thread_id is not defined, it is a new contact
+    const chatTitle = chat_?.thread_id ? getChatTitle(chat_) : getUsernames(chat_); // if chat_.thread_id is not defined, it is a new contact
     let timeFormat = '';
     if (chat_.presence) {
       timeFormat = chat_.presence.is_active
         ? 'Active now'
-        : chat_.presence.last_activity_at_ms &&
-          `Last seen ${formatTime(chat_.presence.last_activity_at_ms)}`;
+        : chat_.presence.last_activity_at_ms && `Last seen ${formatTime(chat_.presence.last_activity_at_ms)}`;
     }
-    const thumbnail = chat_.profile_pic_url || getChatThumbnail(chat_);
+    const thumbnail = (chat_.profile_pic_url && `${WORKER_URL}${chat_.profile_pic_url}`) || `${WORKER_URL}${getChatThumbnail(chat_)}`;
     return (
       <div className="chat-title row p-3">
         <div>
@@ -179,24 +151,18 @@ class Title extends Component {
         {Object.prototype.hasOwnProperty.call(chat_, 'presence') ? (
           <div>
             <b className="ml-2">
-              <Link to={{ pathname: `/${chatTitle}`, state: chat_?.users[0] }}>
-                {chatTitle}
-              </Link>
+              <Link to={`/${chatTitle}`}>{chatTitle}</Link>
             </b>
             <b className="ml-2">{timeFormat}</b>
           </div>
         ) : (
           <div>
             <b className="ml-2 mt-2">
-              <Link to={{ pathname: `/${chatTitle}`, state: chat_?.users[0] }}>
-                {chatTitle}
-              </Link>
+              <Link to={`/${chatTitle}`}>{chatTitle}</Link>
             </b>
           </div>
         )}
-        <ButtonBase
-          onClick={this.handleClickOpen}
-          className={classes.infoButton}>
+        <ButtonBase onClick={this.handleClickOpen} className={classes.infoButton}>
           <InfoIcon style={{ fontSize: '30px' }} />
         </ButtonBase>
         {showInfo && (
@@ -206,20 +172,12 @@ class Title extends Component {
               open={showInfo}
               onClose={this.handleClose}
               aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description">
+              aria-describedby="alert-dialog-description"
+            >
               <DialogTitle id="details">Details</DialogTitle>
               <DialogContent>
                 <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={this.handleChange}
-                        name="checked"
-                      />
-                    }
-                    label="Mute Messages"
-                  />
+                  <FormControlLabel control={<Checkbox checked={checked} onChange={this.handleChange} name="checked" />} label="Mute Messages" />
                 </FormGroup>
                 <Divider />
                 <Typography component="div" className={classes.memberWrapper}>

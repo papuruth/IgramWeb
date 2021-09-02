@@ -1,6 +1,4 @@
 /** @jsx jsx */
-import { loaderAction } from '@/redux/Loader/loaderAction';
-import { removeUserProfilePictureAction, saveProfileAction, updateUserProfilePictureAction } from '@/redux/user/userAction';
 import { jsx } from '@emotion/core';
 import { Button, Dialog, DialogTitle, Divider, List, ListItem, ListItemText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,6 +11,8 @@ import _ from 'lodash';
 import React from 'react';
 import { FadeLoader } from 'react-spinners';
 import validator from 'validator';
+import { removeUserProfilePictureAction, saveProfileAction, updateUserProfilePictureAction } from '@/redux/user/userAction';
+import { loaderAction } from '@/redux/Loader/loaderAction';
 import { Input } from './renderInput';
 import { Label } from './renderLabel';
 import { EditProfileForm, FormInputContainer, FormLabelContainer, GenderButton, GenderChooseSubmitButton, GenderInput, genderRootStyle, genderSubmitCss, PersonalInfoHead, PersonalInfoHeadText, PersonalInfoHelpText, PersonalInfoMessage, ProfileInfoContent, ProfilePhotoButton, ProfilePhotoContainerDiv, ProfilePhotoContent, ProfilePhotoImg, ProfilePhotoInput, ProfilePhotoLoaderDiv, ProfilePhotoUploadContainer, ProfilePhotoUploadForm, ProfilePhotoWrapperDiv, ProfileUpdateButton, ProfileUsername, StyledFormGroup, SubmitFormButton, SubmitFormButtonContainer, submitFormsExtraCss } from './styles';
@@ -395,7 +395,8 @@ class RenderEditForm extends React.Component {
                 classes={{
                   paper: classes.txtPosition,
                 }}
-                open={showProfileChanger}>
+                open={showProfileChanger}
+              >
                 <DialogTitle id="simple-dialog-title">
                   Change Profile Photo
                 </DialogTitle>
@@ -404,7 +405,8 @@ class RenderEditForm extends React.Component {
                     button
                     onClick={this.handlePhotoSelect}
                     key="Upload Photo"
-                    className={classes.listTxtBorder}>
+                    className={classes.listTxtBorder}
+                  >
                     <ListItemText
                       primary="Upload Photo"
                       classes={{
@@ -416,7 +418,8 @@ class RenderEditForm extends React.Component {
                     button
                     onClick={this.handleRemovePhoto}
                     key="Remove Current Photo"
-                    className={classes.listTxtBorder}>
+                    className={classes.listTxtBorder}
+                  >
                     <ListItemText
                       primary="Remove Current Photo"
                       classes={{
@@ -428,7 +431,8 @@ class RenderEditForm extends React.Component {
                     autoFocus
                     button
                     onClick={this.closeProfileChanger}
-                    className={classes.listTxtBorder}>
+                    className={classes.listTxtBorder}
+                  >
                     <ListItemText
                       primary="Cancel"
                       classes={{
@@ -442,7 +446,8 @@ class RenderEditForm extends React.Component {
                 <ProfilePhotoUploadForm
                   enctype="multipart/form-data"
                   method="POST"
-                  role="presentation">
+                  role="presentation"
+                >
                   <ProfilePhotoInput
                     ref={(photoInput) => {
                       this.photoUploadRef = photoInput;
@@ -459,7 +464,8 @@ class RenderEditForm extends React.Component {
             <ProfileUsername title={username}>{username}</ProfileUsername>
             <ProfileUpdateButton
               type="button"
-              onClick={this.changeProfileToggle}>
+              onClick={this.changeProfileToggle}
+            >
               Change Profile Photo
             </ProfileUpdateButton>
           </ProfileInfoContent>
@@ -612,10 +618,12 @@ class RenderEditForm extends React.Component {
               classes={{
                 paper: classes.genderRoot,
               }}
-              open={showGenderDialog}>
+              open={showGenderDialog}
+            >
               <DialogTitle
                 id="simple-dialog-title"
-                className={classes.genderTitle}>
+                className={classes.genderTitle}
+              >
                 Gender
               </DialogTitle>
               <Divider />
@@ -624,7 +632,8 @@ class RenderEditForm extends React.Component {
                   aria-label="gender"
                   name="gender"
                   value={genderType}
-                  onChange={this.updateGender}>
+                  onChange={this.updateGender}
+                >
                   <FormControlLabel
                     className={classes.genderLabel}
                     value={1}
@@ -649,7 +658,8 @@ class RenderEditForm extends React.Component {
                     onClick={this.hideGenderChooser}
                     variant="contained"
                     color="primary"
-                    css={genderSubmitCss}>
+                    css={genderSubmitCss}
+                  >
                     Done
                   </Button>
                 </GenderChooseSubmitButton>
@@ -664,7 +674,8 @@ class RenderEditForm extends React.Component {
               <SubmitFormButtonContainer>
                 <SubmitFormButton
                   type="submit"
-                  disabled={!formEdited && formValid}>
+                  disabled={!formEdited && formValid}
+                >
                   Submit
                 </SubmitFormButton>
               </SubmitFormButtonContainer>

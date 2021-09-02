@@ -78,7 +78,8 @@ export const RenderPrivateAccount = ({
               containerClass="carousel-container"
               removeArrowOnDeviceType={['tablet', 'mobile']}
               dotListClass="custom-dot-list-style"
-              itemClass="carousel-item-padding-40-px">
+              itemClass="carousel-item-padding-40-px"
+            >
               {suggestedUserData.map((user) => {
                 const { pk, profile_pic_url, username, full_name } = user;
                 return (
@@ -87,10 +88,8 @@ export const RenderPrivateAccount = ({
                       <CarouselContentPictureWrapperDiv>
                         <Link
                           css={CarouselContentPictureContentAnchor}
-                          to={{
-                            pathname: username,
-                            state: user,
-                          }}>
+                          to={`/${username}`}
+                        >
                           <CarouselContentImg
                             alt={`${username} profile pic`}
                             src={`${WORKER_URL}${profile_pic_url}`}
@@ -100,10 +99,8 @@ export const RenderPrivateAccount = ({
                       <CarouselContentUsernameDiv>
                         <Link
                           css={CarouselContentUsernameAnchor}
-                          to={{
-                            pathname: username,
-                            state: user,
-                          }}>
+                          to={`/${username}`}
+                        >
                           {username}
                         </Link>
                       </CarouselContentUsernameDiv>

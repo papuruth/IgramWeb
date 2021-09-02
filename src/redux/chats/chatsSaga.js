@@ -1,4 +1,3 @@
-import api from '@/services/api';
 import {
   call,
   put,
@@ -11,6 +10,7 @@ import {
   fork,
 } from 'redux-saga/effects';
 import Axios from 'axios';
+import api from '@/services/api';
 import { chatsConstants } from './chatsConstants';
 import { userConstants } from '../user/userConstants';
 import { loaderConstants } from '../Loader/loaderConstants';
@@ -39,12 +39,12 @@ const fetchChatList = async () => {
 function* fetchChatListSaga() {
   try {
     const { response, error } = yield call(fetchChatList);
-    if (response && response.type === 'chatListResponse') {
+    if (response && response?.status) {
       yield put(
         yield call(
           success,
           chatsConstants.FETCH_CHAT_LIST_SUCCESS,
-          response.payload,
+          response.data,
         ),
       );
     } else {
@@ -133,7 +133,7 @@ function* getSingleChatSaga(action) {
       yield call(
         success,
         chatsConstants.GET_SINGLE_CHAT_SUCCESS,
-        response.payload,
+        response.data,
       ),
     );
   } else if (isNewChat) {
@@ -197,17 +197,18 @@ export function* getOlderMessageWatcher() {
   );
 }
 
+const fileUploadService = async (data) => {
+  try {
+    const response = await api.post('/uploadfile', data);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 function* fileUploadSaga(action) {
-  const fileUploadService = async (data) => {
-    try {
-      const response = await api.post('/uploadfile', data);
-      return response.data;
-    } catch (error) {
-      return error;
-    }
-  };
   const data = yield call(fileUploadService, action.payload);
-  if (data && data.payload.status) {
+  if (data && data?.payload?.status) {
     yield put(
       yield call(
         success,

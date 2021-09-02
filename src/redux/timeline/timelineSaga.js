@@ -1,5 +1,5 @@
-import api from '@/services/api';
 import { call, delay, put, takeEvery } from 'redux-saga/effects';
+import api from '@/services/api';
 import { timelineConstants } from './timelineConstants';
 
 export const success = (type, payload) => ({

@@ -3,22 +3,18 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
-import { unsendMessageAction } from '@/redux/chats/chatsAction';
-import { MoreHoriz } from '@material-ui/icons';
-import React, { Component } from 'react';
-import './carousel';
 import { Avatar } from '@material-ui/core';
+import { MoreHoriz } from '@material-ui/icons';
 import * as moment from 'moment';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import likeHeart from '@/assets/images/heart.svg';
 import { ReactComponent as Like } from '@/assets/images/Like.svg';
 import { ReactComponent as Unlike } from '@/assets/images/Unlike.svg';
-import likeHeart from '@/assets/images/heart.svg';
-import {
-  dom,
-  formatTime,
-  openInBrowser,
-  showInViewer,
-  truncate,
-} from './helperFunctions';
+import { unsendMessageAction } from '@/redux/chats/chatsAction';
+import { WORKER_URL } from '@/utils/constants';
+import './carousel';
+import { dom, formatTime, openInBrowser, showInViewer, truncate } from './helperFunctions';
 
 class Message extends Component {
   constructor(props) {
@@ -71,15 +67,12 @@ class Message extends Component {
     const { message, user, chat_ } = this.props;
     const { openPopover, popMoreAction } = this.state;
     const imageHash = new Date().getTime();
-    const direction =
-      message && message.user_id === user.pk ? 'outward' : 'inward';
+    const direction = message && message.user_id === user.pk ? 'outward' : 'inward';
     const time = message && message.timestamp;
     let senderUsername = '';
     let senderAvatar = '';
     if (direction === 'inward') {
-      const user1 = chat_.users
-        ? chat_.users.find((ele) => ele.pk === message.user_id)
-        : chat_;
+      const user1 = chat_.users ? chat_.users.find((ele) => ele.pk === message.user_id) : chat_;
       if (user1) {
         senderUsername = user1.username;
         senderAvatar = user1.profile_pic_url;
@@ -94,22 +87,14 @@ class Message extends Component {
               return (
                 <React.Fragment key={reactions.likes[0].timestamp}>
                   <Like />
-                  <img
-                    src={chat_.users[0].profile_pic_url}
-                    alt={chat_.users[0].username}
-                    key={like.timestamp}
-                  />
+                  <img src={`${WORKER_URL}${chat_.users[0].profile_pic_url}`} alt={chat_.users[0].username} key={like.timestamp} />
                 </React.Fragment>
               );
             }
             return (
               <span key={reactions.likes[0].timestamp}>
                 <Unlike />
-                <img
-                  src={chat_.inviter.profile_pic_url}
-                  alt={chat_.inviter.username}
-                  key={like.timestamp}
-                />
+                <img src={`${WORKER_URL}${chat_.inviter.profile_pic_url}`} alt={chat_.inviter.username} key={like.timestamp} />
               </span>
             );
           })}
@@ -117,79 +102,46 @@ class Message extends Component {
       );
     }
 
-    const msgContainer = (
-      message = '',
-      classname = '',
-      type = '',
-      reactions = '',
-      msgId = '',
-    ) => (
-      <div
-        className={`content ${classname}`}
-        id={message.item_type}
-        onMouseEnter={this.popMoreAction}>
+    const msgContainer = (message = '', classname = '', type = '', reactions = '', msgId = '') => (
+      <div className={`content ${classname}`} id={message.item_type} onMouseEnter={this.popMoreAction}>
         {direction === 'inward' && (
           <div className="content_child">
-            <a
-              href={`https://instagram.com/${senderUsername}`}
-              target="_blank"
-              rel="noopener noreferrer">
-              <Avatar
-                alt={senderUsername}
-                src={senderAvatar}
-                style={{ width: '24px', height: '24px' }}
-              />
-            </a>
+            <Link to={`/${senderUsername}`}>
+              <Avatar alt={senderUsername} src={`${WORKER_URL}${senderAvatar}`} style={{ width: '24px', height: '24px' }} />
+            </Link>
           </div>
         )}
         <div className="content_child">
           {type && (
             <div>
               <span className="message-sender">{senderUsername}</span>
-              <span className={`message-time-${direction}`}>
-                {time ? formatTime(time) : 'Sending...'}
-              </span>
+              <span className={`message-time-${direction}`}>{time ? formatTime(time) : 'Sending...'}</span>
             </div>
           )}
-          {typeof message === 'string' && (
-            <div className={`txtMessage_${direction}`}>{message}</div>
-          )}
-          {!(typeof message === 'string') && message}
+          {typeof message === 'string' && <div className={`txtMessage_${direction}`}>{message}</div>}
+          {typeof message !== 'string' && message}
           {reactions && renderMessageReactions(reactions)}
         </div>
         {openPopover && (
-          <div
-            className={`popWrapper_${direction}`}
-            onMouseLeave={this.handlePopoverClose}
-            onMouseEnter={this.popMoreAction}>
+          <div className={`popWrapper_${direction}`} onMouseLeave={this.handlePopoverClose} onMouseEnter={this.popMoreAction}>
             <div aria-hidden="false" className="popContentWrapper">
               <div className={`arrowWrapper_${direction}`}>
                 <div className="arrowContent" />
               </div>
               <div className="popContent">
                 <div className="popContent_Child">
-                  <button
-                    className="popContent_Child_Button"
-                    type="button"
-                    onClick={this.likeMessage}>
+                  <button className="popContent_Child_Button" type="button" onClick={this.likeMessage}>
                     Like
                   </button>
                 </div>
                 <div className="popContent_Child">
-                  <button
-                    className="popContent_Child_Button"
-                    type="button"
-                    onClick={this.quoteMessage}>
+                  <button className="popContent_Child_Button" type="button" onClick={this.quoteMessage}>
                     Quote
                   </button>
                 </div>
                 {direction === 'outward' && (
                   <div className="popContent_Child">
-                    <button
-                      className="popContent_Child_Button"
-                      type="button"
-                      id={msgId}
-                      onClick={() => this.unsendMessage(msgId)}>
+                    <button className="popContent_Child_Button" type="button" id={msgId} onClick={() => this.unsendMessage(msgId)}>
                       Unsend
                     </button>
                   </div>
@@ -200,36 +152,21 @@ class Message extends Component {
         )}
         {popMoreAction && message.item_type !== 'like' && (
           <div className={`moreIcon_${direction}`}>
-            <MoreHoriz
-              onMouseEnter={this.popMoreAction}
-              onMouseLeave={this.closeMoreAction}
-              onClick={this.handlePopoverOpen}
-            />
+            <MoreHoriz onMouseEnter={this.popMoreAction} onMouseLeave={this.closeMoreAction} onClick={this.handlePopoverOpen} />
           </div>
         )}
       </div>
     );
     function renderMessageAsText(message, _type, msgId) {
-      const text =
-        typeof message === 'string' ? message : message.text || message;
+      const text = typeof message === 'string' ? message : message.text || message;
       return msgContainer(text, '', _type, message.reactions, msgId);
     }
 
     function renderMessageAsRavenImage(message, _type, msgId) {
-      if (
-        message.visual_media &&
-        !message.visual_media.seen_count &&
-        message.visual_media.media.image_versions2.candidates[1].url
-      ) {
-        const {
-          url,
-        } = message.visual_media.media.image_versions2.candidates[1];
+      if (message.visual_media && !message.visual_media.seen_count && message.visual_media.media.image_versions2.candidates[1].url) {
+        const { url } = message.visual_media.media.image_versions2.candidates[1];
         return msgContainer(
-          <img
-            src={url}
-            alt=""
-            onClick={() => showInViewer(dom(`<img src="${url}" alt="" />`))}
-          />,
+          <img src={`${WORKER_URL}${url}`} alt="" onClick={() => showInViewer(dom(`<img src="${WORKER_URL}${url}" alt="" />`))} />,
           'ig-media',
           null,
           message.reactions,
@@ -249,17 +186,12 @@ class Message extends Component {
     }
 
     function renderMessageAsImage(message, _type, msgId) {
-      const url =
-        typeof message === 'string'
-          ? message
-          : message.media.image_versions2.candidates[0].url;
+      const url = typeof message === 'string' ? message : message.media.image_versions2.candidates[0].url;
       return msgContainer(
         <img
-          src={url}
+          src={`${WORKER_URL}${url}`}
           alt=""
-          onClick={() =>
-            showInViewer(dom(`<img src="${url.concat(imageHash)}" alt=""/>`))
-          }
+          onClick={() => showInViewer(dom(`<img src="${WORKER_URL.concat(url).concat(imageHash)}" alt=""/>`))}
         />,
         'ig-media',
         null,
@@ -273,7 +205,7 @@ class Message extends Component {
       if (post.video_versions) {
         postDom.appendChild(
           dom(`<video width="${post.video_versions[0].width}" controls>
-            <source src="${post.video_versions[0].url}" type="video/mp4">
+            <source src="${WORKER_URL}${post.video_versions[0].url}" type="video/mp4">
             </video>`),
         );
       } else if (post.carousel_media && post.carousel_media.length) {
@@ -282,24 +214,13 @@ class Message extends Component {
           post.carousel_media.map((el) => el.image_versions2.candidates[0].url),
         );
       } else {
-        postDom.appendChild(
-          dom(
-            `<img src="${post.image_versions2.candidates[0].url.concat(
-              imageHash,
-            )}"/>`,
-          ),
-        );
+        postDom.appendChild(dom(`<img src="${WORKER_URL}${post.image_versions2.candidates[0].url.concat(imageHash)}"/>`));
       }
       if (post.caption) {
-        postDom.appendChild(
-          dom(`<p class="post-caption">${post.caption.text}</p>`),
-        );
+        postDom.appendChild(dom(`<p class="post-caption">${post.caption.text}</p>`));
       }
-      const browserLink = dom(
-        '<button class="view-on-ig">View on Instagram</button>',
-      );
-      browserLink.onclick = () =>
-        openInBrowser(`https://instagram.com/${post.user.username}`);
+      const browserLink = dom('<button class="view-on-ig">View on Instagram</button>');
+      browserLink.onclick = () => openInBrowser(`https://instagram.com/${post.user.username}`);
       postDom.appendChild(browserLink);
       showInViewer(postDom);
     }
@@ -311,15 +232,13 @@ class Message extends Component {
           <>
             <img
               src={
-                post.image_versions2.candidates[0].url.concat(imageHash) ||
-                post.images[0][0].url.concat(imageHash)
+                `${WORKER_URL}${post.image_versions2.candidates[0].url.concat(imageHash)}` ||
+                `${WORKER_URL}${post.images[0][0].url.concat(imageHash)}`
               }
               alt=""
               onClick={() => renderPost(post)}
             />
-            {post.caption && (
-              <p className="post-caption">{truncate(post.caption.text, 30)}</p>
-            )}
+            {post.caption && <p className="post-caption">{truncate(post.caption.text, 30)}</p>}
           </>
         );
         return msgContainer(img, 'ig-media', null, message.reactions, msgId);
@@ -329,15 +248,11 @@ class Message extends Component {
         const img = (
           <>
             <img
-              src={post.carousel_media[0].image_versions2.candidates[0].url.concat(
-                imageHash,
-              )}
+              src={`${WORKER_URL}${post.carousel_media[0].image_versions2.candidates[0].url.concat(imageHash)}`}
               alt=""
               onClick={() => renderPost(post)}
             />
-            {post.caption && (
-              <p className="post-caption">{truncate(post.caption.text, 30)}</p>
-            )}
+            {post.caption && <p className="post-caption">{truncate(post.caption.text, 30)}</p>}
           </>
         );
         return msgContainer(img, 'ig-media', null, message.reactions, msgId);
@@ -362,17 +277,12 @@ class Message extends Component {
       return (
         <span>
           {splittedText[0]}
-          <a
-            href={`https://instagram.com/${splittedText[1]}`}
-            target="_blank"
-            rel="noopener noreferrer">
+          <a href={`https://instagram.com/${splittedText[1]}`} target="_blank" rel="noopener noreferrer">
             {splittedText[1]}
-          </a>{' '}
+          </a>
+          {' '}
           {splittedText[2]}
-          <a
-            href={`https://instagram.com/${splittedText[3]}`}
-            target="_blank"
-            rel="noopener noreferrer">
+          <a href={`https://instagram.com/${splittedText[3]}`} target="_blank" rel="noopener noreferrer">
             {splittedText[3]}
           </a>
           {splittedText[4]}
@@ -399,12 +309,7 @@ class Message extends Component {
 
     function renderMessageAsLink(message, _type, msgId) {
       const { link } = message;
-      const {
-        link_image_url,
-        link_summary,
-        link_title,
-        link_url,
-      } = link.link_context;
+      const { link_image_url, link_summary, link_title, link_url } = link.link_context;
       const url = link_url;
       if (link_image_url) {
         return msgContainer(
@@ -439,20 +344,14 @@ class Message extends Component {
 
     function renderMessageAsAnimatedMedia(message, _type, msgId) {
       const { url } = message.animated_media.images.fixed_height;
-      return msgContainer(
-        <img src={`${url}?alt=${imageHash}`} alt="" />,
-        null,
-        null,
-        message.reactions && message.reactions,
-        msgId,
-      );
+      return msgContainer(<img src={`${WORKER_URL}${url}?alt=${imageHash}`} alt="" />, null, null, message.reactions && message.reactions, msgId);
     }
 
     function renderMessageAsVoiceMedia(message, _type, msgId) {
       const src = message.voice_media.media.audio.audio_src;
       return msgContainer(
         <audio preload="auto" controls>
-          <source src={src} />
+          <source src={`${WORKER_URL}${src}`} />
           <track src="" kind="captions" srcLang="en" label="english_captions" />
         </audio>,
         null,
@@ -470,25 +369,19 @@ class Message extends Component {
         return msgContainer(
           <>
             <img
-              src={url?.concat(imageHash)}
+              src={`${WORKER_URL}${url?.concat(imageHash)}`}
               className="story_reaction"
               alt=""
               onClick={() => {
                 if (media?.video_versions) {
                   const videoUrl = media?.video_versions[0]?.url;
-                  return showInViewer(
-                    dom(`<video controls src="${videoUrl}">`),
-                  );
+                  return showInViewer(dom(`<video controls src="${WORKER_URL}${videoUrl}">`));
                 }
-                return showInViewer(
-                  dom(`<img src="${url.concat(imageHash)}">`),
-                );
+                return showInViewer(dom(`<img src="${WORKER_URL}${url.concat(imageHash)}">`));
               }}
             />
             {text && type === 'reply' && <p>{text}</p>}
-            {text && type === 'reaction' && (
-              <p className={`story_reaction_text_${direction}`}>{text}</p>
-            )}
+            {text && type === 'reaction' && <p className={`story_reaction_text_${direction}`}>{text}</p>}
           </>,
           '',
           type === 'reply' ? null : type,
@@ -502,9 +395,7 @@ class Message extends Component {
             <i>Replied to their story</i>
           </p>
           {text && type === 'reply' && <p>{text}</p>}
-          {text && type === 'reaction' && (
-            <p className={`story_reaction_text_${direction}`}>{text}</p>
-          )}
+          {text && type === 'reaction' && <p className={`story_reaction_text_${direction}`}>{text}</p>}
         </>,
         '',
         type === 'reply' ? null : type,
@@ -522,7 +413,13 @@ class Message extends Component {
         const expired = expiring_at ? moment.now() > expiring_at : false;
         if (expired) {
           return msgContainer(
-            <p className="placeholder">Sent {user.username} story.</p>,
+            <p className="placeholder">
+              Sent
+              {' '}
+              {user.username}
+              {' '}
+              story.
+            </p>,
             '',
             reel_type === 'user_reel' ? null : reel_type,
             null,
@@ -532,25 +429,19 @@ class Message extends Component {
         return msgContainer(
           <>
             <img
-              src={url.concat(imageHash)}
+              src={`${WORKER_URL}${url.concat(imageHash)}`}
               className="story_reaction"
               alt=""
               onClick={() => {
                 if (media.video_versions) {
                   const videoUrl = media.video_versions[0].url;
-                  return showInViewer(
-                    dom(`<video controls src="${videoUrl}">`),
-                  );
+                  return showInViewer(dom(`<video controls src="${WORKER_URL}${videoUrl}">`));
                 }
-                return showInViewer(
-                  dom(`<img src="${url.concat(imageHash)}">`),
-                );
+                return showInViewer(dom(`<img src="${WORKER_URL}${url.concat(imageHash)}">`));
               }}
             />
             {text && reel_type === 'reply' && <p>{text}</p>}
-            {text && reel_type === 'reaction' && (
-              <p className={`story_reaction_text_${direction}`}>{text}</p>
-            )}
+            {text && reel_type === 'reaction' && <p className={`story_reaction_text_${direction}`}>{text}</p>}
           </>,
           '',
           reel_type === 'reply' ? null : reel_type,
@@ -569,9 +460,6 @@ class Message extends Component {
         msgId,
       );
     }
-    // function renderMessageAsActionLog(message, type = null, msgId) {
-    //   renderMessageAsText(message.action_log.description, type, msgId);
-    // }
 
     const renderers = {
       media_share: renderMessageAsPost,
@@ -599,11 +487,7 @@ class Message extends Component {
     }
 
     return (
-      <div
-        className={`message clearfix ${direction}`}
-        key={chat_.pk || message.item_id}
-        onMouseLeave={this.handlePopoverClose}
-        id={message.item_id}>
+      <div className={`message clearfix ${direction}`} key={chat_.pk || message.item_id} onMouseLeave={this.handlePopoverClose} id={message.item_id}>
         {message && renderByType(message.item_type, message.item_id)}
       </div>
     );

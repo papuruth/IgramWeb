@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import Emoji from 'a11y-react-emoji';
 import Carousel from 'react-multi-carousel';
+import { WORKER_URL } from '@/utils/constants';
 import 'react-multi-carousel/lib/styles.css';
 import {
   HighlightCarouselItemCanvas, HighlightCarouselItemCaptionDiv, HighlightCarouselItemContentDiv, HighlightCarouselItemImageContentDiv, HighlightCarouselItemImageWrapperDiv, HighlightCarouselItemImg, HighlightCarouselItemWrapperDiv, HighlightContentContainerDiv, HighlightWrapperContainerDiv,
@@ -46,7 +47,7 @@ export const RenderUserHighlights = ({ userHighlightsData }) => (
                   <HighlightCarouselItemCanvas height="87" width="87" />
                   <HighlightCarouselItemImageContentDiv>
                     <HighlightCarouselItemImg
-                      src={cover_media.cropped_image_version ? cover_media.cropped_image_version.url : ''}
+                      src={cover_media.cropped_image_version ? `${WORKER_URL}${cover_media.cropped_image_version.url}` : ''}
                       alt="cover media"
                     />
                   </HighlightCarouselItemImageContentDiv>

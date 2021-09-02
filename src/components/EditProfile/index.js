@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { getCurrentUserAction } from '@/redux/user/userAction';
 import { jsx } from '@emotion/core';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import _ from 'lodash';
+import { getCurrentUserAction } from '@/redux/user/userAction';
 import './edit.profile.css';
 import toast from '@/utils/toast';
 import RenderEditForm from './renderEditForm';
@@ -72,7 +72,8 @@ class EditProfile extends React.Component {
                   <NavLink
                     to={path}
                     activeClassName="link_is_active"
-                    css={ListItemTextLink}>
+                    css={ListItemTextLink}
+                  >
                     {text}
                   </NavLink>
                 </ListItem>

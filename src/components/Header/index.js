@@ -1,11 +1,4 @@
 /* eslint-disable react/prop-types */
-import igramLogo from '@/assets/images/igram.png';
-import { ReactComponent as SharePost } from '@/assets/images/SharePost.svg';
-import {
-  directInboxRecordsAction,
-  searchUser,
-  showLoaderAction,
-} from '@/redux/chats/chatsAction';
 import { Avatar } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
@@ -27,7 +20,15 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import {
+  directInboxRecordsAction,
+  searchUser,
+  showLoaderAction,
+} from '@/redux/chats/chatsAction';
+import { ReactComponent as SharePost } from '@/assets/images/SharePost.svg';
+import igramLogo from '@/assets/images/igram.png';
 import { loaderCss } from './styles';
+import { WORKER_URL } from '@/utils/constants';
 
 const useStyles = (theme) => ({
   headerRoot: {
@@ -165,7 +166,6 @@ class Header extends React.Component {
     if (value.trim() === '' || value.trim().length > 0) {
       dispatch(showLoaderAction(true, 'searchUserLoader'));
       dispatch(searchUser(value.trim(), username));
-      // Toast.info('Searching for user started, please wait!');
     }
   };
 
@@ -220,7 +220,8 @@ class Header extends React.Component {
         keepMounted
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={isMobileMenuOpen}
-        onClose={this.handleMobileMenuClose}>
+        onClose={this.handleMobileMenuClose}
+      >
         <MenuItem>
           <Link to="/">
             <IconButton aria-label="show 4 new mails" color="inherit">
@@ -234,11 +235,13 @@ class Header extends React.Component {
             to={{
               pathname: '/direct/inbox',
               state: { pending_requests_total },
-            }}>
+            }}
+          >
             <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge
                 badgeContent={inbox && inbox.unseen_count}
-                color="secondary">
+                color="secondary"
+              >
                 <SharePost />
               </Badge>
             </IconButton>
@@ -262,20 +265,16 @@ class Header extends React.Component {
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link
-            key={user.pk}
-            to={{
-              pathname: `/${username}`,
-              state: user,
-            }}>
+          <Link key={user.pk} to={`/${username}`}>
             <IconButton
               aria-label="account of current user"
               aria-controls={menuId}
-              color="inherit">
+              color="inherit"
+            >
               <Avatar
                 className={classes.profileAvatar}
                 alt=""
-                src={profile_pic_url}
+                src={`${WORKER_URL}${profile_pic_url}`}
               />
             </IconButton>
             <span>Profile</span>
@@ -288,7 +287,8 @@ class Header extends React.Component {
         <AppBar
           position="fixed"
           className={classes.headerRoot}
-          classes={{ colorPrimary: classes.appBarRoot }}>
+          classes={{ colorPrimary: classes.appBarRoot }}
+        >
           <Toolbar>
             <Typography className={classes.title} variant="h6" noWrap>
               <Link to="/" onClick={this.resetTimeline}>
@@ -332,44 +332,38 @@ class Header extends React.Component {
                 <div
                   ref={(search) => {
                     this.searchToggle = search;
-                  }}>
+                  }}
+                >
                   <div className="search-result-arrow" />
                   <div className="search-result-wrapper">
                     <div className="search-result-content">
                       {searchUserResult.map((item) => {
-                        const {
-                          username,
-                          profile_pic_url,
-                          full_name,
-                          is_verified,
-                          pk,
-                        } = item;
+                        const { full_name, is_verified, pk } = item;
                         return (
                           <Link
                             className="search-result-content-child-anchor"
                             key={pk}
-                            to={{
-                              pathname: `/${username}`,
-                              state: item,
-                            }}
-                            onClick={this.clearSearch}>
+                            to={`/${item?.username}`}
+                            onClick={this.clearSearch}
+                          >
                             <div className="search-result-anchor-content">
                               <div
                                 className="search-result-avatar-wrapper"
-                                onContextMenu={(e) => e.preventDefault()}>
+                                onContextMenu={(e) => e.preventDefault()}
+                              >
                                 <canvas className="search-result-avatar-canvas" />
                                 <span className="search-result-avatar-content">
                                   <img
                                     className="search-result-avatar-image"
-                                    src={profile_pic_url}
-                                    alt={`${username}'s profile`}
+                                    src={`${WORKER_URL}${item?.profile_pic_url}`}
+                                    alt={`${item?.username}'s profile`}
                                   />
                                 </span>
                               </div>
                               <div className="search-result-text-wrapper">
                                 <div className="search-result-text-content">
                                   <span className="search-result-text-username">
-                                    {username}
+                                    {item?.username}
                                   </span>
                                   {is_verified && (
                                     <div className="search-result-verified-badge" />
@@ -399,11 +393,13 @@ class Header extends React.Component {
                 to={{
                   pathname: '/direct/inbox',
                   state: { pending_requests_total },
-                }}>
+                }}
+              >
                 <IconButton aria-label="direct-inbox" color="inherit">
                   <Badge
                     badgeContent={inbox && inbox.unseen_count}
-                    color="secondary">
+                    color="secondary"
+                  >
                     <SharePost />
                   </Badge>
                 </IconButton>
@@ -420,19 +416,18 @@ class Header extends React.Component {
               </Link>
               <Link
                 key={user.pk}
-                to={{
-                  pathname: `/${username}`,
-                  state: user,
-                }}>
+                to={`/${username}`}
+              >
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
                   aria-controls={menuId}
-                  color="inherit">
+                  color="inherit"
+                >
                   <Avatar
                     className={classes.profileAvatar}
                     alt=""
-                    src={profile_pic_url}
+                    src={`${WORKER_URL}${profile_pic_url}`}
                   />
                 </IconButton>
               </Link>
@@ -443,7 +438,8 @@ class Header extends React.Component {
                 aria-controls={mobileMenuId}
                 aria-haspopup="true"
                 onClick={this.handleMobileMenuOpen}
-                color="inherit">
+                color="inherit"
+              >
                 <MoreIcon />
               </IconButton>
             </div>

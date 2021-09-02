@@ -680,6 +680,7 @@ textarea:disabled {
 }
 
 .listStrapper {
+  display: flex;
   overflow-y: overlay;
   flex-direction: column;
   background-color: #fcfcfc;

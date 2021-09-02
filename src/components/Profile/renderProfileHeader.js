@@ -1,13 +1,5 @@
 /* eslint-disable react/prop-types */
 /** @jsx jsx */
-import { ReactComponent as FollowedFriends } from '@/assets/images/followed.svg';
-import { loaderAction } from '@/redux/Loader/loaderAction';
-import {
-  removeUserProfilePictureAction,
-  updateUserProfilePictureAction,
-  userLogout,
-} from '@/redux/user/userAction';
-import { formatNumber } from '@/utils/numberFormat';
 import { jsx } from '@emotion/core';
 import { blue } from '@material-ui/core/colors';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,11 +9,21 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import { ArrowDropDown, MoreHoriz, Settings } from '@material-ui/icons';
-import { useState, useEffect } from 'react';
-import { FadeLoader } from 'react-spinners';
-import './profile.component.css';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FadeLoader } from 'react-spinners';
+import { ReactComponent as FollowedFriends } from '@/assets/images/followed.svg';
 import { getUnfollowersAction } from '@/redux/chats/chatsAction';
+import { loaderAction } from '@/redux/Loader/loaderAction';
+import {
+  removeUserProfilePictureAction,
+  updateUserProfilePictureAction,
+  userLogout
+} from '@/redux/user/userAction';
+import { WORKER_URL } from '@/utils/constants';
+import { formatNumber } from '@/utils/numberFormat';
+import { renderUnfollowers } from '../DirectMessage/rendererFunction';
+import './profile.component.css';
 import {
   accountDetaildFollowDownBtnWrapper,
   accountDetailsConfigWrapper,
@@ -52,10 +54,8 @@ import {
   accountProfileImage,
   accountProfilePicWrapper,
   ProfilePhotoLoaderDiv,
-  profilePicInput,
+  profilePicInput
 } from './styles';
-import { renderUnfollowers } from '../DirectMessage/rendererFunction';
-import { WORKER_URL } from '@/utils/constants';
 
 const useStyles = makeStyles((_theme) => ({
   avatar: {
@@ -229,7 +229,8 @@ export const RenderProfileHeader = ({
               css={accountProfileContentBtn}
               title={profileImageTitle()}
               type="button"
-              onClick={pk === user.pk ? openProfileChanger : () => {}}>
+              onClick={pk === user.pk ? openProfileChanger : () => {}}
+            >
               <img
                 alt="Change Profile Pic"
                 css={accountProfileImage}
@@ -247,7 +248,8 @@ export const RenderProfileHeader = ({
               classes={{
                 paper: classes.txtPosition,
               }}
-              open={showProfileChangeDialog}>
+              open={showProfileChangeDialog}
+            >
               <DialogTitle id="simple-dialog-title">
                 Change Profile Photo
               </DialogTitle>
@@ -256,7 +258,8 @@ export const RenderProfileHeader = ({
                   button
                   onClick={handlePhotoSelect}
                   key="Upload Photo"
-                  className={classes.listTxtBorder}>
+                  className={classes.listTxtBorder}
+                >
                   <ListItemText
                     primary="Upload Photo"
                     classes={{
@@ -268,7 +271,8 @@ export const RenderProfileHeader = ({
                   button
                   onClick={handleRemovePhoto}
                   key="Remove Current Photo"
-                  className={classes.listTxtBorder}>
+                  className={classes.listTxtBorder}
+                >
                   <ListItemText
                     primary="Remove Current Photo"
                     classes={{
@@ -280,7 +284,8 @@ export const RenderProfileHeader = ({
                   autoFocus
                   button
                   onClick={closeProfileChanger}
-                  className={classes.listTxtBorder}>
+                  className={classes.listTxtBorder}
+                >
                   <ListItemText
                     primary="Cancel"
                     classes={{
@@ -294,7 +299,8 @@ export const RenderProfileHeader = ({
               <form
                 encType="multipart/form-data"
                 method="POST"
-                role="presentation">
+                role="presentation"
+              >
                 <input
                   ref={(uploadInput) => {
                     uploadInputRef = uploadInput;
@@ -342,7 +348,8 @@ export const RenderProfileHeader = ({
               <button
                 css={accountDetailsEditProfileBtn}
                 type="button"
-                onClick={showHidePrivateArea}>
+                onClick={showHidePrivateArea}
+              >
                 <ArrowDropDown />
               </button>
             </span>
@@ -359,7 +366,8 @@ export const RenderProfileHeader = ({
                   <button
                     css={accountDetailsFollowDownBtnContent}
                     type="button"
-                    onClick={showHidePrivateArea}>
+                    onClick={showHidePrivateArea}
+                  >
                     <ArrowDropDown />
                   </button>
                 </span>
@@ -371,7 +379,8 @@ export const RenderProfileHeader = ({
               <button
                 css={accountDetailsSettingIconContent}
                 type="button"
-                onClick={showSettingChanger}>
+                onClick={showSettingChanger}
+              >
                 <Settings />
               </button>
             )}
@@ -386,7 +395,8 @@ export const RenderProfileHeader = ({
               classes={{
                 paper: classes.txtPosition,
               }}
-              open={showSettingChangeDialog}>
+              open={showSettingChangeDialog}
+            >
               <List>
                 <ListItem button onClick={handleLogout} key="Logout">
                   <ListItemText
@@ -400,7 +410,8 @@ export const RenderProfileHeader = ({
                   button
                   onClick={handleNonFollowers}
                   className={classes.listTxtBorder}
-                  key="NonFollowers">
+                  key="NonFollowers"
+                >
                   <ListItemText
                     primary="Users Not Following"
                     classes={{
@@ -412,7 +423,8 @@ export const RenderProfileHeader = ({
                   autoFocus
                   button
                   onClick={closeSettingChanger}
-                  className={classes.listTxtBorder}>
+                  className={classes.listTxtBorder}
+                >
                   <ListItemText
                     primary="Cancel"
                     classes={{
@@ -429,33 +441,41 @@ export const RenderProfileHeader = ({
             <span css={accountDetailsListContentChild}>
               <span
                 css={accountDetailsListContentChildSpan}
-                title={media_count}>
+                title={media_count}
+              >
                 {formatNumber(media_count)}
-              </span>{' '}
+              </span>
+              {' '}
               posts
             </span>
           </li>
           <li css={accountDetailsListContent}>
             <a
               css={accountDetailsListContentChild}
-              href={`/${username}/followers/`}>
+              href={`/${username}/followers/`}
+            >
               <span
                 css={accountDetailsListContentChildSpan}
-                title={follower_count}>
+                title={follower_count}
+              >
                 {formatNumber(follower_count)}
-              </span>{' '}
+              </span>
+              {' '}
               followers
             </a>
           </li>
           <li css={accountDetailsListContent}>
             <a
               css={accountDetailsListContentChild}
-              href={`/${username}/following/`}>
+              href={`/${username}/following/`}
+            >
               <span
                 css={accountDetailsListContentChildSpan}
-                title={following_count}>
+                title={following_count}
+              >
                 {formatNumber(following_count)}
-              </span>{' '}
+              </span>
+              {' '}
               following
             </a>
           </li>
@@ -474,7 +494,8 @@ export const RenderProfileHeader = ({
                 href={external_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                css={{ color: '#007bff!important;', fontWeight: 600 }}>
+                css={{ color: '#007bff!important;', fontWeight: 600 }}
+              >
                 {external_url}
               </a>
             </span>
@@ -482,13 +503,19 @@ export const RenderProfileHeader = ({
           {mutualFollower.length > 0 && (
             <a
               css={accountDetailsFollowedByWrapper}
-              href={`${username}/followers/mutualOnly`}>
+              href={`${username}/followers/mutualOnly`}
+            >
               <span css={accountDetailsFollowedByContent}>
-                Followed by{' '}
+                Followed by
+                {' '}
                 <span css={accountDetailsFollowedUser}>
                   {mutualFollower.join(', ')}
                 </span>
-                {' +'} {moreFollower} others.
+                {' +'} 
+                {' '}
+                {moreFollower}
+                {' '}
+                others.
               </span>
             </a>
           )}

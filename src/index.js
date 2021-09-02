@@ -1,5 +1,3 @@
-import App from '@/containers/App';
-import * as serviceWorker from '@/serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
 import 'popper.js/dist/popper';
@@ -8,6 +6,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { PersistGate } from 'redux-persist/integration/react';
+import App from '@/containers/App';
+import * as serviceWorker from '@/serviceWorker';
 import { persistor, store } from './store/store';
 import GlobalStyled from './styles/global';
 

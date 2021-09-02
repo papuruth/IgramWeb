@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import Title from '@/containers/Title';
 import React from 'react';
+import Title from '@/containers/Title';
 import MessageBox from './MessageBox';
 
 const ChatBox = ({ chatData, user, dispatch, resetChatWindow }) => {

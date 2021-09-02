@@ -1,8 +1,8 @@
-import Header from '@/containers/Header';
 import { ConnectedRouter } from 'connected-react-router';
 import React from 'react';
 import { Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import Header from '@/containers/Header';
 import './App.css';
 import CloseIcon from '@/assets/images/close.png';
 import routes from './routes';
@@ -42,7 +42,7 @@ class App extends React.Component {
           </ErrorBoundary>
         </ConnectedRouter>
         <ToastContainer
-          autoClose={8000}
+          autoClose={3000}
           closeButton={false}
           pauseOnHover
           position="bottom-right"
@@ -52,7 +52,8 @@ class App extends React.Component {
             className="close"
             onKeyPress={this.closeModalViewer}
             onClick={this.closeModalViewer}
-            type="submit">
+            type="submit"
+          >
             <img width="25px" src={CloseIcon} alt="close icon" />
           </button>
           <div className="viewer_content" />

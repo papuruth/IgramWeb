@@ -53,9 +53,9 @@ export const fullUserInfoAction = (userId, pk) => ({
   payload: { userId, pk: pk || null },
 });
 
-export const searchExactUserAction = (username) => ({
+export const searchExactUserAction = (username, currentUserData, userFeeds) => ({
   type: userConstants.SEARCH_EXACT_USER_REQUEST,
-  payload: username,
+  payload: { username, currentUserData, userFeeds },
 });
 
 export const updateUserProfilePictureAction = (data) => ({

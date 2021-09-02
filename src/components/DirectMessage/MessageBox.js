@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import Message from '@/containers/Message';
-import { getOlderMessageAction } from '@/redux/chats/chatsAction';
 import React from 'react';
 import SyncLoader from 'react-spinners/SyncLoader';
+import Message from '@/containers/Message';
+import { getOlderMessageAction } from '@/redux/chats/chatsAction';
 import { loaderCss } from './styles';
 
 class MessageBox extends React.PureComponent {
